@@ -17,7 +17,31 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+        }
+
+        /* ============ 图片加载优化 ============ */
+        .content-photo {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .content-photo.loaded {
+            opacity: 1;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 105, 180, 0.3);
+            border-top-color: #ff69b4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* ============ 密码保护页面 ============ */
@@ -35,7 +59,7 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s, visibility 0.5s;
+            transition: opacity 0.8s, visibility 0.8s;
         }
 
         @keyframes gradientShift {
@@ -174,7 +198,8 @@
             height: 100%;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -297,6 +322,22 @@
             margin-bottom: 20px;
         }
 
+        .content-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .content-list li {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.2), rgba(255, 192, 203, 0.1));
+            border-radius: 15px;
+            border-left: 4px solid #ff69b4;
+            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
         /* ============ 3D相册页 ============ */
         .album-3d-page {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
@@ -313,13 +354,23 @@
             align-items: center;
         }
 
+        .album-3d-title {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+            color: white;
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+            z-index: 10;
+        }
+
         .wrap {
             height: 200px;
             width: 200px;
             position: relative;
-            animation: rotate 10s infinite;
+            animation: rotate 15s infinite linear;
             transform-style: preserve-3d;
-            animation-timing-function: linear;
             filter: drop-shadow(0 0 30px rgba(255, 105, 180, 0.5));
         }
 
@@ -344,12 +395,12 @@
             display: block;
             height: 100px;
             width: 100px;
-            background-color: skyblue;
             position: absolute;
             top: 50px;
             left: 50px;
             background-size: cover;
             background-repeat: no-repeat;
+            background-position: center;
             border: 2px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
         }
@@ -357,11 +408,11 @@
         .wrap div {
             height: 200px;
             width: 200px;
-            background-color: salmon;
             position: absolute;
-            transition: all 0.6s;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             background-size: cover;
             background-repeat: no-repeat;
+            background-position: center;
             border: 3px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 0 30px rgba(255, 105, 180, 0.4);
         }
@@ -394,8 +445,8 @@
         .wrap.touched .out-bottom { transform: rotateX(-90deg) translateZ(200px); }
 
         @keyframes rotate {
-            0% { transform: rotateX(0deg) rotate(0deg); }
-            100% { transform: rotateX(360deg) rotate(360deg); }
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
         }
 
         /* ============ 导航按钮 ============ */
@@ -427,7 +478,7 @@
 
         .nav-btn:hover {
             background: white;
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.05);
             box-shadow: 0 8px 25px rgba(255, 105, 180, 0.5),
                         0 0 40px rgba(255, 105, 180, 0.3);
             border-color: #ff69b4;
@@ -439,34 +490,79 @@
             transform: none;
         }
 
-        /* ============ 页面指示器 ============ */
+        .nav-btn:disabled:hover {
+            transform: none;
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.3);
+        }
+
+        /* ============ 爱心形状指示器 ============ */
         .page-indicator {
             position: fixed;
-            top: 30px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
             z-index: 100;
+            max-width: 90%;
+            justify-content: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
         }
 
-        .indicator-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
+        .indicator-heart {
+            position: relative;
+            width: 12px;
+            height: 12px;
+            transform: rotate(-45deg);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .indicator-heart::before,
+        .indicator-heart::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
             background: rgba(255, 255, 255, 0.5);
-            transition: all 0.3s;
-            box-shadow: 0 2px 10px rgba(255, 105, 180, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .indicator-dot.active {
-            background: white;
-            width: 30px;
-            border-radius: 5px;
-            box-shadow: 0 2px 15px rgba(255, 105, 180, 0.5);
+        .indicator-heart::before {
+            left: -6px;
         }
 
-        /* ============ 装饰元素 - 爱心 ============ */
+        .indicator-heart::after {
+            top: -6px;
+        }
+
+        .indicator-heart.active {
+            width: 16px;
+            height: 16px;
+        }
+
+        .indicator-heart.active::before,
+        .indicator-heart.active::after {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.8);
+        }
+
+        .indicator-heart.active::before {
+            left: -8px;
+        }
+
+        .indicator-heart.active::after {
+            top: -8px;
+        }
+
+        /* ============ 装饰元素 - 爱心（持续显示）============ */
         .floating-hearts {
             position: fixed;
             top: 0;
@@ -480,11 +576,9 @@
 
         .heart {
             position: absolute;
-            animation: float-up 8s infinite ease-in;
-            opacity: 0;
+            animation: float-up-continuous 15s infinite ease-in-out;
         }
 
-        /* CSS绘制的3D爱心 */
         .heart-shape {
             position: relative;
             width: 20px;
@@ -511,25 +605,28 @@
             top: -10px;
         }
 
-        @keyframes float-up {
+        @keyframes float-up-continuous {
             0% {
-                transform: translateY(0) rotate(0deg) scale(0);
+                transform: translateY(100vh) rotate(0deg) scale(0.5);
                 opacity: 0;
             }
-            10% {
-                opacity: 1;
-                transform: translateY(-10vh) rotate(45deg) scale(1);
+            5% {
+                opacity: 0.8;
             }
-            90% {
-                opacity: 1;
+            50% {
+                opacity: 0.9;
+                transform: translateY(50vh) rotate(180deg) scale(1);
+            }
+            95% {
+                opacity: 0.8;
             }
             100% {
-                transform: translateY(-100vh) rotate(360deg) scale(0.5);
+                transform: translateY(-10vh) rotate(360deg) scale(0.5);
                 opacity: 0;
             }
         }
 
-        /* ============ 装饰元素 - 星星 ============ */
+        /* ============ 装饰元素 - 星星（持续显示） ============ */
         .floating-stars {
             position: fixed;
             top: 0;
@@ -543,20 +640,30 @@
 
         .star {
             position: absolute;
-            width: 3px;
-            height: 3px;
+            width: 4px;
+            height: 4px;
             background: white;
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-            animation: twinkle 3s infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.9),
+                        0 0 20px rgba(255, 255, 255, 0.6);
+            animation: twinkle 3s infinite ease-in-out;
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.5); }
+            0%, 100% {
+                opacity: 0.4;
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.9),
+                            0 0 30px rgba(255, 182, 193, 0.5);
+            }
         }
 
-        /* ============ 装饰元素 - 花瓣 ============ */
+        /* ============ 装饰元素 - 花瓣（持续显示） ============ */
         .floating-petals {
             position: fixed;
             top: 0;
@@ -572,25 +679,24 @@
             position: absolute;
             width: 15px;
             height: 15px;
-            background: linear-gradient(135deg, rgba(255, 182, 193, 0.8), rgba(255, 192, 203, 0.6));
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.9), rgba(255, 192, 203, 0.7));
             border-radius: 50% 0 50% 0;
-            animation: fall 10s infinite;
-            opacity: 0;
+            animation: fall-continuous 20s infinite ease-in-out;
         }
 
-        @keyframes fall {
+        @keyframes fall-continuous {
             0% {
-                transform: translateY(0) rotate(0deg);
+                transform: translateY(-10vh) rotate(0deg);
                 opacity: 0;
             }
-            10% {
+            5% {
                 opacity: 0.8;
             }
-            90% {
+            95% {
                 opacity: 0.8;
             }
             100% {
-                transform: translateY(100vh) rotate(720deg);
+                transform: translateY(110vh) rotate(720deg);
                 opacity: 0;
             }
         }
@@ -598,18 +704,24 @@
         /* ============ 光晕效果 ============ */
         .glow-effect {
             position: fixed;
-            width: 300px;
-            height: 300px;
+            width: 400px;
+            height: 400px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 105, 180, 0.3) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 105, 180, 0.25) 0%, transparent 70%);
             pointer-events: none;
             z-index: 0;
-            animation: moveGlow 20s infinite;
+            animation: moveGlow 25s infinite ease-in-out;
         }
 
         @keyframes moveGlow {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-30%, -30%) scale(1.5); }
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(-30%, -30%) scale(1.5);
+                opacity: 1;
+            }
         }
 
         /* ============ 倒计时样式 ============ */
@@ -626,7 +738,7 @@
             background-clip: text;
             text-shadow: 0 5px 30px rgba(255, 105, 180, 0.5);
             margin: 30px 0;
-            animation: pulse 2s infinite;
+            animation: pulse 2s infinite ease-in-out;
             filter: drop-shadow(0 0 30px rgba(255, 182, 193, 0.8));
         }
 
@@ -679,6 +791,50 @@
             .days-number {
                 font-size: 80px;
             }
+
+            .page-indicator {
+                top: 10px;
+                max-width: 95%;
+                gap: 6px;
+            }
+
+            .indicator-heart {
+                width: 10px;
+                height: 10px;
+            }
+
+            .indicator-heart::before,
+            .indicator-heart::after {
+                width: 10px;
+                height: 10px;
+            }
+
+            .indicator-heart::before {
+                left: -5px;
+            }
+
+            .indicator-heart::after {
+                top: -5px;
+            }
+
+            .indicator-heart.active {
+                width: 14px;
+                height: 14px;
+            }
+
+            .indicator-heart.active::before,
+            .indicator-heart.active::after {
+                width: 14px;
+                height: 14px;
+            }
+
+            .indicator-heart.active::before {
+                left: -7px;
+            }
+
+            .indicator-heart.active::after {
+                top: -7px;
+            }
         }
     </style>
 </head>
@@ -689,7 +845,7 @@
         <div class="password-container">
             <h1>💕 专属密码 💕</h1>
             <p>请输入密码查看我们的回忆</p>
-            <input type="password" class="password-input" id="password-input" placeholder="请输入密码" maxlength="7">
+            <input type="password" class="password-input" id="password-input" placeholder="请输入密码" maxlength="7" autocomplete="off">
             <button class="password-btn" onclick="checkPassword()">解锁回忆</button>
             <p class="password-error" id="password-error">密码错误，请重试</p>
         </div>
@@ -702,9 +858,10 @@
         <div class="floating-stars" id="floating-stars"></div>
         <div class="floating-petals" id="floating-petals"></div>
         <div class="glow-effect" style="top: 20%; left: 20%;"></div>
-        <div class="glow-effect" style="top: 60%; left: 70%; animation-delay: -10s;"></div>
+        <div class="glow-effect" style="top: 70%; left: 80%; animation-delay: -12s;"></div>
+        <div class="glow-effect" style="top: 50%; left: 50%; animation-delay: -20s;"></div>
 
-        <!-- 页面指示器 -->
+        <!-- 爱心指示器 -->
         <div class="page-indicator" id="page-indicator"></div>
 
         <!-- 页面容器 -->
@@ -734,7 +891,7 @@
                 <div class="content-wrapper">
                     <h2 class="content-title">💫 初次相遇</h2>
                     <p class="content-date">那天阳光正好</p>
-                    <img src="images/t1.jpg" alt="初次相遇" class="content-photo">
+                    <img src="images/t1.jpg" alt="初次相遇" class="content-photo" loading="lazy">
                     <p class="content-text">
                         还记得我们第一次见面的场景，你的微笑就像春日的暖阳，让我的心跳加速。
                         那一刻，我就知道，你是我一直在等待的那个人。
@@ -747,7 +904,7 @@
                 <div class="content-wrapper">
                     <h2 class="content-title">🌸 第一次约会</h2>
                     <p class="content-date">紧张又期待的一天</p>
-                    <img src="images/t1.jpg" alt="第一次约会" class="content-photo">
+                    <img src="images/t1.jpg" alt="第一次约会" class="content-photo" loading="lazy">
                     <p class="content-text">
                         第一次约会的紧张，第一次牵手的悸动，第一次一起看电影的温馨...
                         这些美好的第一次，都成为了我们爱情故事的开始。
@@ -760,7 +917,7 @@
                 <div class="content-wrapper">
                     <h2 class="content-title">🎀 美好时光</h2>
                     <p class="content-date">每一刻都值得珍藏</p>
-                    <img src="images/t1.jpg" alt="美好时光" class="content-photo">
+                    <img src="images/t1.jpg" alt="美好时光" class="content-photo" loading="lazy">
                     <p class="content-text">
                         一起散步、一起吃饭、一起看夕阳，平凡的日子因为有你而变得不平凡。
                         每一个瞬间都是我们爱情的见证。
@@ -773,7 +930,7 @@
                 <div class="content-wrapper">
                     <h2 class="content-title">💝 难忘回忆</h2>
                     <p class="content-date">那些让人心动的瞬间</p>
-                    <img src="images/t1.jpg" alt="难忘回忆" class="content-photo">
+                    <img src="images/t1.jpg" alt="难忘回忆" class="content-photo" loading="lazy">
                     <p class="content-text">
                         每一次的惊喜，每一次的感动，每一次的欢笑...
                         这些美好的回忆，都深深地刻在了我的心里。
@@ -781,12 +938,12 @@
                 </div>
             </div>
 
-            <!-- 第7页：更多回忆 -->
+            <!-- 第7页：点点滴滴 -->
             <div class="page content-page">
                 <div class="content-wrapper">
                     <h2 class="content-title">🌟 点点滴滴</h2>
                     <p class="content-date">我们的故事还在继续</p>
-                    <img src="images/t1.jpg" alt="更多回忆" class="content-photo">
+                    <img src="images/t1.jpg" alt="更多回忆" class="content-photo" loading="lazy">
                     <p class="content-text">
                         生活中的点点滴滴，都因为有你而变得有意义。
                         未来的每一天，我都想和你一起度过。
@@ -794,8 +951,127 @@
                 </div>
             </div>
 
-            <!-- 第8页：3D相册 -->
+            <!-- 第8页：我们的约定 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">🤝 我们的约定</h2>
+                    <p class="content-date">彼此的承诺</p>
+                    <ul class="content-list">
+                        <li>💕 无论发生什么，都要诚实相待</li>
+                        <li>🌈 每天都要说"我爱你"</li>
+                        <li>🎁 记住彼此的重要日子</li>
+                        <li>🤗 难过的时候给对方一个拥抱</li>
+                        <li>✨ 一起努力变成更好的人</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 第9页：特殊的日子 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">📅 特殊的日子</h2>
+                    <p class="content-date">值得纪念的时刻</p>
+                    <img src="images/t1.jpg" alt="特殊日子" class="content-photo" loading="lazy">
+                    <p class="content-text">
+                        第一次见面、第一次牵手、第一次拥抱...
+                        每一个"第一次"都是我们爱情里最珍贵的时刻。
+                        这些日子，我会永远铭记在心。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第10页：第一次说我爱你 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">💌 第一次说我爱你</h2>
+                    <p class="content-date">勇敢表白的那一刻</p>
+                    <img src="images/t1.jpg" alt="第一次说我爱你" class="content-photo" loading="lazy">
+                    <p class="content-text">
+                        还记得第一次对你说"我爱你"时的紧张和激动，
+                        当你笑着回应我的时候，我的世界仿佛都亮了起来。
+                        那一刻，我知道我找到了对的人。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第11页：最难忘的时刻 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">✨ 最难忘的时刻</h2>
+                    <p class="content-date">永远不会忘记</p>
+                    <img src="images/t1.jpg" alt="最难忘的时刻" class="content-photo" loading="lazy">
+                    <p class="content-text">
+                        有太多难忘的瞬间：你生病时我陪在你身边，
+                        你为我准备的惊喜，我们一起看过的星空...
+                        每一个瞬间都让我更加确定，你就是我的唯一。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第12页：一起做的傻事 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">😄 一起做的傻事</h2>
+                    <p class="content-date">美好的回忆</p>
+                    <img src="images/t1.jpg" alt="一起做的傻事" class="content-photo" loading="lazy">
+                    <p class="content-text">
+                        我们一起做过很多"傻事"：
+                        雨中漫步、深夜唱歌、为了看日出早起...
+                        这些"傻事"都是我们独一无二的回忆，
+                        也是我们爱情最美的见证。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第13页：你的优点 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">🌹 我爱你的理由</h2>
+                    <p class="content-date">你的每一面都让我着迷</p>
+                    <ul class="content-list">
+                        <li>💖 你温柔的笑容总能治愈我</li>
+                        <li>🌟 你的善良让世界更美好</li>
+                        <li>💪 你的坚强让我更有勇气</li>
+                        <li>🎨 你的才华让我骄傲</li>
+                        <li>✨ 你的陪伴让我感到幸福</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 第14页：感谢有你 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">🙏 感谢有你</h2>
+                    <p class="content-date">因为你，我变得更好</p>
+                    <img src="images/t1.jpg" alt="感谢有你" class="content-photo" loading="lazy">
+                    <p class="content-text">
+                        感谢你出现在我的生命里，
+                        让我知道什么是真正的爱情。
+                        感谢你的包容、理解和支持，
+                        让我可以勇敢做自己。
+                        有你，真好。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第15页：我的承诺 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">💍 我的承诺</h2>
+                    <p class="content-date">给你的誓言</p>
+                    <ul class="content-list">
+                        <li>💝 我会永远爱你、珍惜你</li>
+                        <li>🛡️ 我会保护你、守护你</li>
+                        <li>☀️ 我会让你每天都开心</li>
+                        <li>🌙 我会陪你度过每一个夜晚</li>
+                        <li>♾️ 我会和你走到永远</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 第16页：3D相册 -->
             <div class="page album-3d-page">
+                <h2 class="album-3d-title">💕 我们的相册 💕</h2>
                 <div class="album-3d-container">
                     <div class="wrap" id="album-wrap">
                         <span class="in-front"></span>
@@ -814,7 +1090,74 @@
                 </div>
             </div>
 
-            <!-- 第9页：告白 -->
+            <!-- 第17页：未来的憧憬 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">🌈 未来的憧憬</h2>
+                    <p class="content-date">我们的未来</p>
+                    <img src="images/t1.jpg" alt="未来的憧憬" class="content-photo" loading="lazy">
+                    <p class="content-text">
+                        我憧憬着我们的未来：
+                        一起旅行看遍世界的美景，
+                        一起建立温馨的小家，
+                        一起经历人生的每个阶段。
+                        无论未来怎样，只要有你在身边，我就满足了。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第18页：想和你一起做的事 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">📝 想和你一起做的事</h2>
+                    <p class="content-date">我们的愿望清单</p>
+                    <ul class="content-list">
+                        <li>🎡 一起去游乐园坐摩天轮</li>
+                        <li>🏖️ 一起去海边看日出日落</li>
+                        <li>⛰️ 一起爬山看云海</li>
+                        <li>🎭 一起看音乐会和话剧</li>
+                        <li>🍳 一起学做对方最爱吃的菜</li>
+                        <li>📷 一起拍很多很多照片</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 第19页：我们的歌 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">🎵 我们的歌</h2>
+                    <p class="content-date">属于我们的旋律</p>
+                    <img src="images/t1.jpg" alt="我们的歌" class="content-photo" loading="lazy">
+                    <p class="content-text">
+                        每当听到那首歌，我就会想起你。
+                        那是属于我们的旋律，记录着我们的故事。
+                        希望以后的每一天，都能和你一起听着这首歌，
+                        回忆我们走过的每一步。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第20页：纪念日快乐 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">🎉 纪念日快乐</h2>
+                    <p class="content-date">100天纪念</p>
+                    <img src="images/t1.jpg" alt="纪念日快乐" class="content-photo" loading="lazy">
+                    <p class="content-text" style="text-align: center; font-size: 18px; color: #ff69b4; line-height: 2;">
+                        今天是我们的100天纪念日<br>
+                        这100天里，有欢笑有泪水<br>
+                        但更多的是幸福和甜蜜<br><br>
+
+                        未来还有更多的100天在等着我们<br>
+                        我会一直陪在你身边<br>
+                        让每一天都变成值得纪念的日子<br><br>
+
+                        <strong style="font-size: 22px;">纪念日快乐，我的宝贝 💕</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第21页：告白 -->
             <div class="page content-page">
                 <div class="content-wrapper">
                     <h2 class="content-title">💌 想对你说</h2>
@@ -837,6 +1180,13 @@
                         <span style="font-size: 14px; color: #999;">—— 永远爱你的人</span>
                     </p>
                 </div>
+            </div>
+
+            <!-- 第22页：永远爱你 -->
+            <div class="page cover-page">
+                <h1 class="cover-title" style="font-size: 60px;">Forever Love</h1>
+                <p class="cover-subtitle">我会永远爱你</p>
+                <p class="cover-date">❤️ 今天 · 明天 · 每一天 ❤️</p>
             </div>
         </div>
 
@@ -894,48 +1244,74 @@
 
         // ============ 主内容初始化 ============
         function initMainContent() {
-            if (isInitialized) return; // 防止重复初始化
+            if (isInitialized) return;
             isInitialized = true;
 
             const pages = document.querySelectorAll('.page');
             totalPages = pages.length;
 
-            createFloatingHearts();
-            createFloatingStars();
-            createFloatingPetals();
+            createContinuousHearts();
+            createStaticStars();
+            createContinuousPetals();
             createPageIndicators();
             init3DAlbum();
             updateDaysCounter();
             updateNavButtons();
             setupEventListeners();
+            preloadImages();
+        }
+
+        // ============ 图片预加载 ============
+        function preloadImages() {
+            const images = document.querySelectorAll('.content-photo');
+            images.forEach(img => {
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', function() {
+                        this.classList.add('loaded');
+                    });
+                    img.addEventListener('error', function() {
+                        this.classList.add('loaded');
+                    });
+                }
+            });
         }
 
         // ============ 设置事件监听器 ============
         function setupEventListeners() {
-            // 触摸滑动支持
             let touchStartX = 0;
             let touchEndX = 0;
+            let touchStartTime = 0;
 
             document.addEventListener('touchstart', function(e) {
                 touchStartX = e.changedTouches[0].screenX;
+                touchStartTime = Date.now();
             }, { passive: true });
 
             document.addEventListener('touchend', function(e) {
                 touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
+                const touchDuration = Date.now() - touchStartTime;
+
+                // 只有快速滑动才触发切换
+                if (touchDuration < 300) {
+                    handleSwipe();
+                }
             }, { passive: true });
 
             function handleSwipe() {
                 const swipeThreshold = 50;
-                if (touchEndX < touchStartX - swipeThreshold) {
-                    nextPage();
-                }
-                if (touchEndX > touchStartX + swipeThreshold) {
-                    prevPage();
+                const diff = touchStartX - touchEndX;
+
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        nextPage();
+                    } else {
+                        prevPage();
+                    }
                 }
             }
 
-            // 键盘导航
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'ArrowLeft') prevPage();
                 if (e.key === 'ArrowRight') nextPage();
@@ -974,89 +1350,100 @@
             }
         }
 
-        // ============ 页面指示器 ============
+        // ============ 爱心形状指示器 ============
         function createPageIndicators() {
             const indicator = document.getElementById('page-indicator');
             indicator.innerHTML = '';
             for (let i = 0; i < totalPages; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'indicator-dot';
-                if (i === 0) dot.classList.add('active');
-                indicator.appendChild(dot);
+                const heart = document.createElement('div');
+                heart.className = 'indicator-heart';
+                if (i === 0) heart.classList.add('active');
+                heart.onclick = () => goToPage(i);
+                indicator.appendChild(heart);
+            }
+        }
+
+        function goToPage(pageIndex) {
+            const pages = document.querySelectorAll('.page');
+            if (pageIndex >= 0 && pageIndex < totalPages && pageIndex !== currentPage) {
+                pages[currentPage].classList.remove('active');
+                currentPage = pageIndex;
+                pages[currentPage].classList.add('active');
+                updateNavButtons();
+                updateIndicators();
             }
         }
 
         function updateIndicators() {
-            const dots = document.querySelectorAll('.indicator-dot');
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentPage);
+            const hearts = document.querySelectorAll('.indicator-heart');
+            hearts.forEach((heart, index) => {
+                heart.classList.toggle('active', index === currentPage);
             });
         }
 
-        // ============ 漂浮爱心（增强版） ============
-        function createFloatingHearts() {
+        // ============ 持续显示的爱心 ============
+        function createContinuousHearts() {
             const container = document.getElementById('floating-hearts');
-            setInterval(() => {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-
-                // 创建CSS绘制的爱心
-                const heartShape = document.createElement('div');
-                heartShape.className = 'heart-shape';
-                heart.appendChild(heartShape);
-
-                heart.style.left = Math.random() * 100 + '%';
-                heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
-                heart.style.animationDelay = (Math.random() * 2) + 's';
-
-                // 随机大小
-                const size = Math.random() * 15 + 15;
-                heartShape.style.width = size + 'px';
-                heartShape.style.height = size + 'px';
-
-                container.appendChild(heart);
-
+            // 创建20个爱心，持续循环显示
+            for (let i = 0; i < 20; i++) {
                 setTimeout(() => {
-                    heart.remove();
-                }, 10000);
-            }, 300); // 增加频率，更多爱心
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+
+                    const heartShape = document.createElement('div');
+                    heartShape.className = 'heart-shape';
+                    heart.appendChild(heartShape);
+
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDuration = (Math.random() * 5 + 10) + 's';
+                    heart.style.animationDelay = (Math.random() * 5) + 's';
+
+                    const size = Math.random() * 10 + 15;
+                    heartShape.style.width = size + 'px';
+                    heartShape.style.height = size + 'px';
+
+                    container.appendChild(heart);
+                }, i * 300);
+            }
         }
 
-        // ============ 漂浮星星 ============
-        function createFloatingStars() {
+        // ============ 静态星星 ============
+        function createStaticStars() {
             const container = document.getElementById('floating-stars');
-            // 创建静态星星
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 80; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.style.left = Math.random() * 100 + '%';
                 star.style.top = Math.random() * 100 + '%';
                 star.style.animationDelay = Math.random() * 3 + 's';
                 star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+
+                const size = Math.random() * 3 + 2;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+
                 container.appendChild(star);
             }
         }
 
-        // ============ 漂浮花瓣 ============
-        function createFloatingPetals() {
+        // ============ 持续显示的花瓣 ============
+        function createContinuousPetals() {
             const container = document.getElementById('floating-petals');
-            setInterval(() => {
-                const petal = document.createElement('div');
-                petal.className = 'petal';
-                petal.style.left = Math.random() * 100 + '%';
-                petal.style.animationDuration = (Math.random() * 5 + 8) + 's';
-                petal.style.animationDelay = (Math.random() * 2) + 's';
-
-                const size = Math.random() * 10 + 10;
-                petal.style.width = size + 'px';
-                petal.style.height = size + 'px';
-
-                container.appendChild(petal);
-
+            for (let i = 0; i < 15; i++) {
                 setTimeout(() => {
-                    petal.remove();
-                }, 15000);
-            }, 800);
+                    const petal = document.createElement('div');
+                    petal.className = 'petal';
+                    petal.style.left = Math.random() * 100 + '%';
+                    petal.style.animationDuration = (Math.random() * 8 + 12) + 's';
+                    petal.style.animationDelay = (Math.random() * 5) + 's';
+
+                    const size = Math.random() * 8 + 12;
+                    petal.style.width = size + 'px';
+                    petal.style.height = size + 'px';
+
+                    container.appendChild(petal);
+                }, i * 500);
+            }
         }
 
         // ============ 3D相册 ============
@@ -1066,24 +1453,29 @@
 
             const children = wrap.children;
 
-            // 所有3D相册都使用t1.jpg
             for (let i = 0; i < children.length; i++) {
                 children[i].style.backgroundImage = 'url(images/t1.jpg)';
             }
 
-            // 移动端点击展开效果
-            wrap.addEventListener('touchstart', function () {
+            let touchTimeout;
+            wrap.addEventListener('touchstart', function (e) {
+                e.stopPropagation();
                 this.classList.add('touched');
+                clearTimeout(touchTimeout);
             });
 
-            wrap.addEventListener('touchend', function () {
-                this.classList.remove('touched');
+            wrap.addEventListener('touchend', function (e) {
+                e.stopPropagation();
+                const self = this;
+                touchTimeout = setTimeout(() => {
+                    self.classList.remove('touched');
+                }, 300);
             });
         }
 
         // ============ 倒计时计算 ============
         function updateDaysCounter() {
-            const startDate = new Date('2024-08-25'); // 修改为你们的相识日期
+            const startDate = new Date('2024-08-25');
             const today = new Date();
             const diffTime = Math.abs(today - startDate);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
