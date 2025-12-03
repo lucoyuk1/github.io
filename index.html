@@ -1,37 +1,329 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>七夕节3D旋转相册</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我们的100天 💕</title>
     <style>
-        /* 使用本地图片的话请按要求注释掉下边js代码中的指定行，并在.in-front、.in-back.......out-bottom后添加上background-images属性，值为'url('自己照片的本地路径')'即可。 */
         * {
-            padding: 0;
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         html,
         body {
-            height: 100%;
             width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* ============ 密码保护页面 ============ */
+        #password-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffd1dc 0%, #ffb6c1 50%, #ff9eb5 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        #password-page.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .password-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            animation: floatIn 0.8s ease-out;
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .password-container h1 {
+            color: #ff69b4;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .password-container p {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #ffb6c1;
+            border-radius: 25px;
+            font-size: 16px;
+            text-align: center;
+            letter-spacing: 5px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .password-input:focus {
+            border-color: #ff69b4;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.2);
+        }
+
+        .password-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #ff69b4, #ff9eb5);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .password-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.4);
+        }
+
+        .password-error {
+            color: #ff4444;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .password-error.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        /* ============ 主内容区域 ============ */
+        #main-content {
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        #main-content.active {
+            display: block;
+        }
+
+        /* ============ 页面容器 ============ */
+        .pages-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffd1dc 0%, #ffb6c1 50%, #ff9eb5 100%);
+        }
+
+        .page.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        .page.slide-out-left {
+            transform: translateX(-100%);
+        }
+
+        .page.slide-in-right {
+            transform: translateX(100%);
+        }
+
+        /* ============ 封面页 ============ */
+        .cover-page {
+            text-align: center;
             position: relative;
         }
 
-        .background {
+        .cover-title {
+            font-size: 48px;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(255, 105, 180, 0.5);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .cover-subtitle {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out 0.3s backwards;
+        }
+
+        .cover-date {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            animation: fadeInUp 1s ease-out 0.6s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============ 内容页 ============ */
+        .content-page {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .content-wrapper {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.2);
+        }
+
+        .content-title {
+            font-size: 32px;
+            color: #ff69b4;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .content-date {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .content-photo {
+            width: 100%;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
+            max-height: 400px;
+        }
+
+        .content-text {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.8;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        /* ============ 3D相册页 ============ */
+        .album-3d-page {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .album-3d-container {
             width: 100%;
             height: 100%;
-            background-image: url(https://wimg.588ku.com/gif620/20/09/09/5a07e514eb72b1fce52ee9a447d0237d.gif);
-            background-repeat: x-repeat;
-            background-size: 66%;
             position: relative;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wrap {
+            height: 200px;
+            width: 200px;
+            position: relative;
+            animation: rotate 10s infinite;
+            transform-style: preserve-3d;
+            animation-timing-function: linear;
+        }
+
+        @media (max-width: 768px) {
+            .wrap {
+                height: 150px;
+                width: 150px;
+            }
+
+            .wrap span {
+                height: 75px !important;
+                width: 75px !important;
+            }
+
+            .wrap div {
+                height: 150px !important;
+                width: 150px !important;
+            }
         }
 
         .wrap span {
@@ -43,53 +335,95 @@
             top: 50px;
             left: 50px;
             background-size: cover;
-            background-repeat: no-repeat; 
+            background-repeat: no-repeat;
         }
 
-        .wrap {
+        .wrap div {
             height: 200px;
             width: 200px;
+            background-color: salmon;
             position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            margin: auto;
-            margin: 200px auto;
-            animation: rotate 10s infinite;
-            transform-style: preserve-3d;
-            animation-timing-function: linear;
-            touch-action: manipulation;
+            transition: all 0.6s;
+            background-size: cover;
+            background-repeat: no-repeat;
         }
 
         .in-front {
             transform: translateZ(50px);
-            background-size: 100%;
         }
 
         .in-back {
             transform: translateZ(-50px);
-            background-size: 100%;
         }
 
         .in-left {
             transform: rotateY(90deg) translateZ(50px);
-            background-size: 100%;
         }
 
         .in-right {
             transform: rotateY(-90deg) translateZ(50px);
-            background-size: 100%;
         }
 
         .in-top {
             transform: rotateX(90deg) translateZ(50px);
-            background-size: 100%;
         }
 
         .in-bottom {
             transform: rotateX(-90deg) translateZ(50px);
-            background-size: 100%;
+        }
+
+        .out-front {
+            transform: translateZ(100px);
+        }
+
+        .out-back {
+            transform: translateZ(-100px);
+        }
+
+        .out-left {
+            transform: rotateY(90deg) translateZ(100px);
+        }
+
+        .out-right {
+            transform: rotateY(-90deg) translateZ(100px);
+        }
+
+        .out-top {
+            transform: rotateX(90deg) translateZ(100px);
+        }
+
+        .out-bottom {
+            transform: rotateX(-90deg) translateZ(100px);
+        }
+
+        .wrap:hover .out-front,
+        .wrap.touched .out-front {
+            transform: translateZ(200px);
+        }
+
+        .wrap:hover .out-back,
+        .wrap.touched .out-back {
+            transform: translateZ(-200px);
+        }
+
+        .wrap:hover .out-left,
+        .wrap.touched .out-left {
+            transform: rotateY(90deg) translateZ(200px);
+        }
+
+        .wrap:hover .out-right,
+        .wrap.touched .out-right {
+            transform: rotateY(-90deg) translateZ(200px);
+        }
+
+        .wrap:hover .out-top,
+        .wrap.touched .out-top {
+            transform: rotateX(90deg) translateZ(200px);
+        }
+
+        .wrap:hover .out-bottom,
+        .wrap.touched .out-bottom {
+            transform: rotateX(-90deg) translateZ(200px);
         }
 
         @keyframes rotate {
@@ -102,149 +436,552 @@
             }
         }
 
-        .wrap div {
-            height: 200px;
-            width: 200px;
-            background-color: salmon;
+        /* ============ 导航按钮 ============ */
+        .nav-buttons {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.3);
+            font-size: 24px;
+        }
+
+        .nav-btn:hover {
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* ============ 页面指示器 ============ */
+        .page-indicator {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .indicator-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s;
+        }
+
+        .indicator-dot.active {
+            background: white;
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        /* ============ 装饰元素 ============ */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .heart {
             position: absolute;
-            transition: all 0.6s;
-            background-size: cover;
-            background-repeat: no-repeat; 
+            font-size: 20px;
+            animation: float-up 6s infinite ease-in;
+            opacity: 0;
         }
 
-        .out-front {
-            transform: translateZ(100px);
-            background-size: 100%;
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
 
-        .out-back {
-            transform: translateZ(-100px);
-            background-size: 100%;
+        /* ============ 响应式设计 ============ */
+        @media (max-width: 768px) {
+            .cover-title {
+                font-size: 36px;
+            }
+
+            .cover-subtitle {
+                font-size: 20px;
+            }
+
+            .content-wrapper {
+                padding: 30px 20px;
+            }
+
+            .content-title {
+                font-size: 26px;
+            }
+
+            .content-text {
+                font-size: 15px;
+            }
+
+            .password-container {
+                padding: 30px 20px;
+            }
         }
 
-        .out-left {
-            transform: rotateY(90deg) translateZ(100px);
-            background-size: 100%;
+        /* ============ 倒计时样式 ============ */
+        .countdown-wrapper {
+            text-align: center;
         }
 
-        .out-right {
-            transform: rotateY(-90deg) translateZ(100px);
-            background-size: 100%;
+        .days-number {
+            font-size: 120px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 5px 30px rgba(255, 105, 180, 0.5);
+            margin: 30px 0;
+            animation: pulse 2s infinite;
         }
 
-        .out-top {
-            transform: rotateX(90deg) translateZ(100px);
-            background-size: 100%;
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
         }
 
-        .out-bottom {
-            transform: rotateX(-90deg) translateZ(100px);
-            background-size: 100%;
+        .days-label {
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
         }
 
-        .wrap:hover .out-front {
-            transform: translateZ(200px);
-        }
-
-        .wrap:hover .out-back {
-            transform: translateZ(-200px);
-        }
-
-        .wrap:hover .out-left {
-            transform: rotateY(90deg) translateZ(200px);
-        }
-
-        .wrap:hover .out-right {
-            transform: rotateY(-90deg) translateZ(200px);
-        }
-
-        .wrap:hover .out-top {
-            transform: rotateX(90deg) translateZ(200px);
-        }
-
-        .wrap:hover .out-bottom {
-            transform: rotateX(-90deg) translateZ(200px);
+        .countdown-message {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 20px;
+            line-height: 1.6;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
 </head>
 
 <body>
-    <div class="background">
-        <div class="wrap">
-            <span class="in-front"></span>
-            <span class="in-back"></span>
-            <span class="in-left"></span>
-            <span class="in-right"></span>
-            <span class="in-top"></span>
-            <span class="in-bottom"></span>
-            <!-- 外层： -->
-            <div class="out-front"></div>
-            <div class="out-back"></div>
-            <div class="out-left"></div>
-            <div class="out-right"></div>
-            <div class="out-top"></div>
-            <div class="out-bottom"></div>
-        </div>
-        <div style="position: absolute; bottom: 10px; width: 100%; text-align: center; color: white; background-color: rgba(0, 0, 0, 0.5);">
-            如有侵权联系作者 236888888@qq.com
+    <!-- 密码保护页面 -->
+    <div id="password-page">
+        <div class="password-container">
+            <h1>💕 专属密码 💕</h1>
+            <p>请输入密码查看我们的回忆</p>
+            <input type="password" class="password-input" id="password-input" placeholder="请输入密码" maxlength="7">
+            <button class="password-btn" onclick="checkPassword()">解锁回忆</button>
+            <p class="password-error" id="password-error">密码错误，请重试</p>
         </div>
     </div>
+
+    <!-- 主内容 -->
+    <div id="main-content">
+        <!-- 装饰元素 -->
+        <div class="floating-hearts" id="floating-hearts"></div>
+
+        <!-- 页面指示器 -->
+        <div class="page-indicator" id="page-indicator"></div>
+
+        <!-- 页面容器 -->
+        <div class="pages-container" id="pages-container">
+            <!-- 第1页：封面 -->
+            <div class="page active cover-page">
+                <h1 class="cover-title">我们的100天</h1>
+                <p class="cover-subtitle">相遇是缘，相知是幸</p>
+                <p class="cover-date">一起走过的每一天都值得纪念</p>
+            </div>
+
+            <!-- 第2页：倒计时 -->
+            <div class="page">
+                <div class="countdown-wrapper">
+                    <div class="days-number" id="days-counter">100</div>
+                    <div class="days-label">天</div>
+                    <p class="countdown-message">
+                        从相识到现在<br>
+                        每一天都因为你而特别<br>
+                        这是我们的第100天纪念日
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第3页：初次相遇 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">💫 初次相遇</h2>
+                    <p class="content-date">那天阳光正好</p>
+                    <img src="images/photo1.jpg" alt="初次相遇" class="content-photo" onerror="this.src='https://via.placeholder.com/600x400/ffb6c1/ffffff?text=第一张照片'">
+                    <p class="content-text">
+                        还记得我们第一次见面的场景，你的微笑就像春日的暖阳，让我的心跳加速。
+                        那一刻，我就知道，你是我一直在等待的那个人。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第4页：第一次约会 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">🌸 第一次约会</h2>
+                    <p class="content-date">紧张又期待的一天</p>
+                    <img src="images/photo2.jpg" alt="第一次约会" class="content-photo" onerror="this.src='https://via.placeholder.com/600x400/ffd1dc/ffffff?text=第二张照片'">
+                    <p class="content-text">
+                        第一次约会的紧张，第一次牵手的悸动，第一次一起看电影的温馨...
+                        这些美好的第一次，都成为了我们爱情故事的开始。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第5页：一起的时光 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">🎀 美好时光</h2>
+                    <p class="content-date">每一刻都值得珍藏</p>
+                    <img src="images/photo3.jpg" alt="美好时光" class="content-photo" onerror="this.src='https://via.placeholder.com/600x400/ff9eb5/ffffff?text=第三张照片'">
+                    <p class="content-text">
+                        一起散步、一起吃饭、一起看夕阳，平凡的日子因为有你而变得不平凡。
+                        每一个瞬间都是我们爱情的见证。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第6页：难忘的回忆 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">💝 难忘回忆</h2>
+                    <p class="content-date">那些让人心动的瞬间</p>
+                    <img src="images/photo4.jpg" alt="难忘回忆" class="content-photo" onerror="this.src='https://via.placeholder.com/600x400/ffb6c1/ffffff?text=第四张照片'">
+                    <p class="content-text">
+                        每一次的惊喜，每一次的感动，每一次的欢笑...
+                        这些美好的回忆，都深深地刻在了我的心里。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第7页：更多回忆 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">🌟 点点滴滴</h2>
+                    <p class="content-date">我们的故事还在继续</p>
+                    <img src="images/photo5.jpg" alt="更多回忆" class="content-photo" onerror="this.src='https://via.placeholder.com/600x400/ffd1dc/ffffff?text=第五张照片'">
+                    <p class="content-text">
+                        生活中的点点滴滴，都因为有你而变得有意义。
+                        未来的每一天，我都想和你一起度过。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 第8页：3D相册 -->
+            <div class="page album-3d-page">
+                <div class="album-3d-container">
+                    <div class="wrap" id="album-wrap">
+                        <span class="in-front"></span>
+                        <span class="in-back"></span>
+                        <span class="in-left"></span>
+                        <span class="in-right"></span>
+                        <span class="in-top"></span>
+                        <span class="in-bottom"></span>
+                        <div class="out-front"></div>
+                        <div class="out-back"></div>
+                        <div class="out-left"></div>
+                        <div class="out-right"></div>
+                        <div class="out-top"></div>
+                        <div class="out-bottom"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第9页：告白 -->
+            <div class="page content-page">
+                <div class="content-wrapper">
+                    <h2 class="content-title">💌 想对你说</h2>
+                    <p class="content-date">写给最爱的你</p>
+                    <p class="content-text" style="text-align: center; font-size: 18px; color: #ff69b4; line-height: 2;">
+                        亲爱的，<br><br>
+
+                        这100天里，你给了我太多的快乐和感动。<br>
+                        每一天醒来看到你的消息，都是我一天的好心情。<br>
+                        每一次见到你，我的心都会加速跳动。<br><br>
+
+                        谢谢你出现在我的生命里，<br>
+                        谢谢你愿意和我一起走过这100天。<br><br>
+
+                        未来还有更多的100天在等着我们，<br>
+                        我想和你一起经历人生的每一个瞬间。<br><br>
+
+                        <strong style="font-size: 24px;">我爱你 💕</strong><br><br>
+
+                        <span style="font-size: 14px; color: #999;">—— 永远爱你的人</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导航按钮 -->
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prev-btn" onclick="prevPage()">◀</button>
+            <button class="nav-btn" id="next-btn" onclick="nextPage()">▶</button>
+        </div>
+    </div>
+
     <script>
-        const urlList = [
-            "https://pic.img.wang/img/2024/12/26/676d1e532b02e.png",
-            "https://pic.img.wang/img/2024/12/26/676d1f212b3a5.png",
-            "https://pic.img.wang/img/2024/12/26/676d1f2168992.png",
-            "https://pic.img.wang/img/2024/12/26/676d1f20d28d9.png",
-            "https://pic.img.wang/img/2024/12/26/676d20f396e6f.png",
-            "https://pic.img.wang/img/2024/12/26/676d20f2923e4.png",
-            "https://pic.img.wang/img/2024/12/26/676d20f31dcff.png",
-            "https://pic.img.wang/img/2024/12/26/676d20f40fd75.png",
-            "https://pic.img.wang/img/2024/12/26/676d1f20d28d9.png",
-            "https://pic.img.wang/img/2024/12/26/676d20f3becc5.png",
-            "https://pic.img.wang/img/2024/12/26/676d24aec698f.png",
-            "https://pic.img.wang/img/2024/12/26/676d24ae92b0e.png",
-            "https://pic.img.wang/img/2024/12/26/676d24b0add02.png",
-            "https://pic.img.wang/img/2024/12/26/676d24b073a57.png",
-            "https://pic.img.wang/img/2024/12/26/676d24b02e13c.png",
-            "https://pic.img.wang/img/2024/12/26/676d24afadf21.png",
-            "https://pic.img.wang/img/2024/12/26/676d24b0d2518.png",
-            "https://pic.img.wang/img/2024/12/26/676d24b112f19.png",
-            // "https://pic.img.wang/img/2024/12/26/676d1f20d28d9.png",
-            // "https://pic.img.wang/img/2024/12/26/676d1f20d28d9.png",
-            // "https://img2.baidu.com/it/u=2615932853,2425748336&fm=253&fmt=auto&app=138&f=JPEG?w=711&h=459",
-            // "https://img2.baidu.com/it/u=2294779632,1476523525&fm=253&fmt=auto&app=138&f=JPEG?w=750&h=500",
-            // "https://img0.baidu.com/it/u=3561322606,2603151212&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=625",
-            // "https://img0.baidu.com/it/u=3416499135,857424318&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=750",
-            // "https://img1.baidu.com/it/u=3153729209,616088956&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=668",
-            // "https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2022%2F0804%2F57a99713j00rg3a6f00a0c001z402gwm.jpg&thumbnail=660x2147483647&quality=80&type=jpg",
-            // "https://img2.baidu.com/it/u=1293260410,3751082277&fm=253&fmt=auto&app=138&f=JPEG?w=750&h=500",
-            // "https://img2.baidu.com/it/u=3938168370,3313419093&fm=253&fmt=auto&app=138&f=JPEG?w=344&h=499",
-            // "https://img2.baidu.com/it/u=1183888668,1450015188&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=667",
-            // "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fsafe-img.xhscdn.com%2Fbw%2F86c1cb77-7a96-4ca0-a2db-17bdfc99ad03%3FimageView2%2F2%2Fw%2F1080%2Fformat%2Fjpg&refer=http%3A%2F%2Fsafe-img.xhscdn.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1725785533&t=20c07f09c9f755935aee30767118da9d",
-            // "https://img1.baidu.com/it/u=143669273,3429724512&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=666",
-            // "https://q6.itc.cn/images01/20240711/501de75bce814a0f917119137c2122be.jpeg",
-        ];
-        function traverseElement(element) {
-            console.log(element); // 输出当前元素
-            for (let i = 0; i < element.children.length; i++) {
-                element.children[i].style.backgroundImage = `url(${urlList[i]})`;
+        // ============ 密码验证 ============
+        const PASSWORD = "5201010";
+        const passwordPage = document.getElementById('password-page');
+        const mainContent = document.getElementById('main-content');
+        const passwordInput = document.getElementById('password-input');
+        const passwordError = document.getElementById('password-error');
+
+        // 检查是否已经解锁
+        if (localStorage.getItem('unlocked') === 'true') {
+            passwordPage.classList.add('hidden');
+            mainContent.classList.add('active');
+            initMainContent();
+        }
+
+        // 密码输入框回车事件
+        passwordInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        function checkPassword() {
+            const input = passwordInput.value;
+            if (input === PASSWORD) {
+                localStorage.setItem('unlocked', 'true');
+                passwordPage.classList.add('hidden');
+                mainContent.classList.add('active');
+                initMainContent();
+            } else {
+                passwordError.classList.add('show');
+                passwordInput.value = '';
+                passwordInput.classList.add('shake');
+                setTimeout(() => {
+                    passwordError.classList.remove('show');
+                    passwordInput.classList.remove('shake');
+                }, 2000);
             }
         }
-        const wrap = document.querySelector(".wrap");
-        traverseElement(wrap);
 
-        // 为移动端添加点击事件
-        const outElements = document.querySelectorAll('.wrap div');
-        outElements.forEach(element => {
-            element.addEventListener('click', function() {
-                if (element.style.transform.includes('translateZ(200px)')) {
-                    element.style.transform = element.style.transform.replace('translateZ(200px)', 'translateZ(100px)');
-                } else {
-                    element.style.transform = element.style.transform.replace('translateZ(100px)', 'translateZ(200px)');
-                }
+        // ============ 主内容初始化 ============
+        function initMainContent() {
+            createFloatingHearts();
+            createPageIndicators();
+            init3DAlbum();
+            updateNavButtons();
+        }
+
+        // ============ 页面导航 ============
+        let currentPage = 0;
+        const pages = document.querySelectorAll('.page');
+        const totalPages = pages.length;
+
+        function nextPage() {
+            if (currentPage < totalPages - 1) {
+                pages[currentPage].classList.remove('active');
+                currentPage++;
+                pages[currentPage].classList.add('active');
+                updateNavButtons();
+                updateIndicators();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                pages[currentPage].classList.remove('active');
+                currentPage--;
+                pages[currentPage].classList.add('active');
+                updateNavButtons();
+                updateIndicators();
+            }
+        }
+
+        function updateNavButtons() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            prevBtn.disabled = currentPage === 0;
+            nextBtn.disabled = currentPage === totalPages - 1;
+        }
+
+        // ============ 页面指示器 ============
+        function createPageIndicators() {
+            const indicator = document.getElementById('page-indicator');
+            for (let i = 0; i < totalPages; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'indicator-dot';
+                if (i === 0) dot.classList.add('active');
+                indicator.appendChild(dot);
+            }
+        }
+
+        function updateIndicators() {
+            const dots = document.querySelectorAll('.indicator-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentPage);
             });
+        }
+
+        // ============ 触摸滑动支持 ============
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
         });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                nextPage();
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                prevPage();
+            }
+        }
+
+        // ============ 键盘导航 ============
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') prevPage();
+            if (e.key === 'ArrowRight') nextPage();
+        });
+
+        // ============ 漂浮爱心 ============
+        function createFloatingHearts() {
+            const container = document.getElementById('floating-hearts');
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💕';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
+                container.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 6000);
+            }, 1000);
+        }
+
+        // ============ 3D相册 ============
+        function init3DAlbum() {
+            const urlList = [
+                "images/album1.jpg",
+                "images/album2.jpg",
+                "images/album3.jpg",
+                "images/album4.jpg",
+                "images/album5.jpg",
+                "images/album6.jpg",
+                "images/album7.jpg",
+                "images/album8.jpg",
+                "images/album9.jpg",
+                "images/album10.jpg",
+                "images/album11.jpg",
+                "images/album12.jpg",
+            ];
+
+            // 如果图片不存在，使用占位图
+            const placeholders = [
+                "https://via.placeholder.com/200/ffb6c1/ffffff?text=1",
+                "https://via.placeholder.com/200/ffd1dc/ffffff?text=2",
+                "https://via.placeholder.com/200/ff9eb5/ffffff?text=3",
+                "https://via.placeholder.com/200/ffb6c1/ffffff?text=4",
+                "https://via.placeholder.com/200/ffd1dc/ffffff?text=5",
+                "https://via.placeholder.com/200/ff9eb5/ffffff?text=6",
+                "https://via.placeholder.com/200/ffb6c1/ffffff?text=7",
+                "https://via.placeholder.com/200/ffd1dc/ffffff?text=8",
+                "https://via.placeholder.com/200/ff9eb5/ffffff?text=9",
+                "https://via.placeholder.com/200/ffb6c1/ffffff?text=10",
+                "https://via.placeholder.com/200/ffd1dc/ffffff?text=11",
+                "https://via.placeholder.com/200/ff9eb5/ffffff?text=12",
+            ];
+
+            const wrap = document.getElementById('album-wrap');
+            const children = wrap.children;
+
+            for (let i = 0; i < children.length; i++) {
+                const img = new Image();
+                img.onload = function () {
+                    children[i].style.backgroundImage = `url(${urlList[i]})`;
+                };
+                img.onerror = function () {
+                    children[i].style.backgroundImage = `url(${placeholders[i]})`;
+                };
+                img.src = urlList[i];
+            }
+
+            // 移动端点击展开效果
+            wrap.addEventListener('touchstart', function () {
+                this.classList.add('touched');
+            });
+
+            wrap.addEventListener('touchend', function () {
+                this.classList.remove('touched');
+            });
+        }
+
+        // ============ 倒计时计算 ============
+        function updateDaysCounter() {
+            // 你可以在这里修改开始日期
+            const startDate = new Date('2024-08-25'); // 修改为你们的相识日期
+            const today = new Date();
+            const diffTime = Math.abs(today - startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            const counter = document.getElementById('days-counter');
+            if (counter) {
+                counter.textContent = diffDays;
+            }
+        }
+
+        // 页面加载完成后更新倒计时
+        if (localStorage.getItem('unlocked') === 'true') {
+            updateDaysCounter();
+        }
     </script>
 </body>
 
