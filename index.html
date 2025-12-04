@@ -24,24 +24,11 @@
         .content-photo {
             opacity: 0;
             transition: opacity 0.5s ease;
+            will-change: opacity;
         }
 
         .content-photo.loaded {
             opacity: 1;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 105, 180, 0.3);
-            border-top-color: #ff69b4;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
 
         /* ============ 密码保护页面 ============ */
@@ -198,8 +185,7 @@
             height: 100%;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
-                        transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.8s ease-in-out;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -208,33 +194,47 @@
             background: linear-gradient(135deg, #ffd1dc 0%, #ffb6c1 50%, #ff9eb5 100%);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
+            will-change: opacity;
         }
 
         /* ============ 背景爱心绘制动画 ============ */
-        .page::before {
-            content: '';
+        .background-heart {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: min(80vw, 80vh);
-            height: min(80vw, 80vh);
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100,170 C60,140 20,110 20,70 C20,50 30,30 50,30 C70,30 85,40 100,55 C115,40 130,30 150,30 C170,30 180,50 180,70 C180,110 140,140 100,170 Z' fill='none' stroke='rgba(255, 182, 193, 0.15)' stroke-width='2' stroke-dasharray='1000' stroke-dashoffset='1000'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            opacity: 0.6;
+            width: min(70vw, 70vh);
+            height: min(70vw, 70vh);
             z-index: 0;
             pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
         }
 
-        .page.active::before {
-            animation: drawHeart 3s ease-out forwards;
+        .page.active .background-heart {
+            opacity: 1;
         }
 
-        @keyframes drawHeart {
+        .background-heart svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .background-heart path {
+            fill: none;
+            stroke: rgba(255, 182, 193, 0.2);
+            stroke-width: 3;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+        }
+
+        .page.active .background-heart path {
+            animation: drawHeartStroke 3s ease-out forwards;
+        }
+
+        @keyframes drawHeartStroke {
             to {
-                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100,170 C60,140 20,110 20,70 C20,50 30,30 50,30 C70,30 85,40 100,55 C115,40 130,30 150,30 C170,30 180,50 180,70 C180,110 140,140 100,170 Z' fill='none' stroke='rgba(255, 182, 193, 0.15)' stroke-width='2' stroke-dasharray='1000' stroke-dashoffset='0'/%3E%3C/svg%3E");
+                stroke-dashoffset: 0;
             }
         }
 
@@ -246,7 +246,7 @@
         }
 
         /* 确保页面内容在背景爱心之上 */
-        .page > * {
+        .page > *:not(.background-heart) {
             position: relative;
             z-index: 1;
         }
@@ -379,8 +379,8 @@
             animation: gradientShift 15s ease infinite;
         }
 
-        /* 3D相册页面不显示背景爱心绘制 */
-        .album-3d-page::before {
+        /* 3D相册页面不显示背景爱心 */
+        .album-3d-page .background-heart {
             display: none;
         }
 
@@ -617,7 +617,7 @@
             height: 100%;
             pointer-events: none;
             overflow: hidden;
-            z-index: 1;
+            z-index: 50;
         }
 
         .heart {
@@ -677,7 +677,7 @@
             height: 100%;
             pointer-events: none;
             overflow: hidden;
-            z-index: 1;
+            z-index: 50;
         }
 
         .star {
@@ -714,7 +714,7 @@
             height: 100%;
             pointer-events: none;
             overflow: hidden;
-            z-index: 1;
+            z-index: 50;
         }
 
         .petal {
@@ -743,56 +743,37 @@
             }
         }
 
-        /* ============ 光晕效果 ============ */
+        /* ============ 光晕效果 - 简化以提高性能 ============ */
         .glow-effect {
             position: fixed;
-            width: 400px;
-            height: 400px;
+            width: 300px;
+            height: 300px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 105, 180, 0.25) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 105, 180, 0.15) 0%, transparent 70%);
             pointer-events: none;
             z-index: 0;
-            animation: moveGlow 25s infinite ease-in-out;
-        }
-
-        @keyframes moveGlow {
-            0%, 100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.6;
-            }
-            50% {
-                transform: translate(-30%, -30%) scale(1.5);
-                opacity: 1;
-            }
+            opacity: 0.5;
         }
 
         /* ============ 结尾页面特殊样式 ============ */
         .ending-page {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
             background-size: 400% 400% !important;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .ending-page::before {
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100,170 C60,140 20,110 20,70 C20,50 30,30 50,30 C70,30 85,40 100,55 C115,40 130,30 150,30 C170,30 180,50 180,70 C180,110 140,140 100,170 Z' fill='none' stroke='rgba(255, 105, 180, 0.3)' stroke-width='3' stroke-dasharray='1000' stroke-dashoffset='1000'/%3E%3C/svg%3E") !important;
-            filter: drop-shadow(0 0 30px rgba(255, 105, 180, 0.6));
-            width: min(90vw, 90vh) !important;
-            height: min(90vw, 90vh) !important;
-        }
-
-        .ending-page.active::before {
-            animation: drawHeartGlow 4s ease-out forwards !important;
-        }
-
-        @keyframes drawHeartGlow {
-            to {
-                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100,170 C60,140 20,110 20,70 C20,50 30,30 50,30 C70,30 85,40 100,55 C115,40 130,30 150,30 C170,30 180,50 180,70 C180,110 140,140 100,170 Z' fill='none' stroke='rgba(255, 105, 180, 0.3)' stroke-width='3' stroke-dasharray='1000' stroke-dashoffset='0'/%3E%3C/svg%3E") !important;
-            }
+        .ending-page .background-heart path {
+            stroke: rgba(255, 105, 180, 0.3);
+            stroke-width: 4;
+            filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.5));
         }
 
         .ending-content {
             text-align: center;
             max-width: 800px;
-            padding: 40px;
+            padding: 40px 20px;
+            margin: 0 auto;
         }
 
         .ending-title {
@@ -1416,6 +1397,7 @@
             const pages = document.querySelectorAll('.page');
             totalPages = pages.length;
 
+            addBackgroundHearts();
             createContinuousHearts();
             createStaticStars();
             createContinuousPetals();
@@ -1425,6 +1407,28 @@
             updateNavButtons();
             setupEventListeners();
             preloadImages();
+        }
+
+        // ============ 为每个页面添加背景爱心 ============
+        function addBackgroundHearts() {
+            const pages = document.querySelectorAll('.page');
+            const heartPath = 'M100,180 C55,145 10,110 10,65 C10,40 25,20 50,20 C70,20 85,30 100,50 C115,30 130,20 150,20 C175,20 190,40 190,65 C190,110 145,145 100,180 Z';
+
+            pages.forEach(page => {
+                const heartContainer = document.createElement('div');
+                heartContainer.className = 'background-heart';
+
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('viewBox', '0 0 200 200');
+                svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', heartPath);
+
+                svg.appendChild(path);
+                heartContainer.appendChild(svg);
+                page.insertBefore(heartContainer, page.firstChild);
+            });
         }
 
         // ============ 图片预加载 ============
@@ -1589,8 +1593,8 @@
         // ============ 持续显示的爱心 ============
         function createContinuousHearts() {
             const container = document.getElementById('floating-hearts');
-            // 创建40个爱心，持续循环显示
-            for (let i = 0; i < 40; i++) {
+            // 创建15个爱心，持续循环显示
+            for (let i = 0; i < 15; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('div');
                     heart.className = 'heart';
@@ -1615,7 +1619,7 @@
         // ============ 静态星星 ============
         function createStaticStars() {
             const container = document.getElementById('floating-stars');
-            for (let i = 0; i < 150; i++) {
+            for (let i = 0; i < 50; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.style.left = Math.random() * 100 + '%';
@@ -1634,7 +1638,7 @@
         // ============ 持续显示的花瓣 ============
         function createContinuousPetals() {
             const container = document.getElementById('floating-petals');
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 10; i++) {
                 setTimeout(() => {
                     const petal = document.createElement('div');
                     petal.className = 'petal';
