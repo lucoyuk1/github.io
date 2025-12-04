@@ -50,8 +50,15 @@
         }
 
         @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         #password-page.hidden {
@@ -66,7 +73,7 @@
             padding: 40px;
             border-radius: 30px;
             box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3),
-                        0 0 100px rgba(255, 182, 193, 0.2);
+                0 0 100px rgba(255, 182, 193, 0.2);
             text-align: center;
             max-width: 90%;
             width: 400px;
@@ -79,6 +86,7 @@
                 opacity: 0;
                 transform: translateY(-30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -153,9 +161,26 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
         }
 
         /* ============ 主内容区域 ============ */
@@ -246,7 +271,7 @@
         }
 
         /* 确保页面内容在背景爱心之上 */
-        .page > *:not(.background-heart) {
+        .page>*:not(.background-heart) {
             position: relative;
             z-index: 1;
         }
@@ -255,39 +280,109 @@
         .cover-page {
             text-align: center;
             position: relative;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+            background-size: 400% 400% !important;
+        }
+
+        .cover-page .background-heart path {
+            stroke: rgba(255, 105, 180, 0.3);
+            stroke-width: 5;
+            filter: drop-shadow(0 0 25px rgba(255, 105, 180, 0.6));
+        }
+
+        .cover-content {
+            position: relative;
+            z-index: 10;
         }
 
         .cover-title {
-            font-size: 52px;
-            background: linear-gradient(135deg, #fff, #ffe6f0);
+            font-size: 72px;
+            background: linear-gradient(135deg, #fff 0%, #ffb6c1 50%, #ff69b4 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             font-weight: 700;
-            margin-bottom: 20px;
-            text-shadow: 0 4px 20px rgba(255, 105, 180, 0.5);
-            animation: fadeInUp 1s ease-out, glow 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 30px rgba(255, 182, 193, 0.8));
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out, coverGlow 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 50px rgba(255, 105, 180, 1));
+            letter-spacing: 6px;
         }
 
-        @keyframes glow {
-            0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 182, 193, 0.6)); }
-            50% { filter: drop-shadow(0 0 40px rgba(255, 105, 180, 0.9)); }
+        @keyframes coverGlow {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 35px rgba(255, 105, 180, 0.8));
+                transform: scale(1);
+            }
+
+            50% {
+                filter: drop-shadow(0 0 60px rgba(255, 105, 180, 1));
+                transform: scale(1.03);
+            }
+        }
+
+        .cover-hearts {
+            font-size: 56px;
+            margin: 25px 0;
+            animation: fadeInUp 1s ease-out 0.3s backwards;
+        }
+
+        .cover-hearts span {
+            display: inline-block;
+            animation: floatHeart 3s ease-in-out infinite;
+            margin: 0 12px;
+        }
+
+        .cover-hearts span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .cover-hearts span:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .cover-hearts span:nth-child(3) {
+            animation-delay: 0.6s;
         }
 
         .cover-subtitle {
-            font-size: 26px;
+            font-size: 32px;
             color: rgba(255, 255, 255, 0.95);
-            margin-bottom: 40px;
-            animation: fadeInUp 1s ease-out 0.3s backwards;
-            text-shadow: 0 2px 10px rgba(255, 105, 180, 0.5);
+            margin-bottom: 25px;
+            animation: fadeInUp 1s ease-out 0.6s backwards;
+            text-shadow: 0 4px 20px rgba(255, 105, 180, 0.8);
+            font-weight: 500;
         }
 
         .cover-date {
-            font-size: 18px;
+            font-size: 20px;
             color: rgba(255, 255, 255, 0.9);
-            animation: fadeInUp 1s ease-out 0.6s backwards;
-            text-shadow: 0 2px 10px rgba(255, 105, 180, 0.3);
+            line-height: 1.8;
+            animation: fadeInUp 1s ease-out 0.9s backwards;
+            text-shadow: 0 2px 15px rgba(255, 105, 180, 0.5);
+        }
+
+        .cover-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            animation: fadeInUp 1s ease-out 1.2s backwards, bounce 2s ease-in-out 2s infinite;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(-10px);
+            }
         }
 
         @keyframes fadeInUp {
@@ -295,6 +390,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -315,7 +411,7 @@
             border-radius: 30px;
             padding: 40px 30px;
             box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3),
-                        0 0 100px rgba(255, 182, 193, 0.2);
+                0 0 100px rgba(255, 182, 193, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.5);
         }
 
@@ -342,7 +438,7 @@
             border-radius: 20px;
             margin-bottom: 20px;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15),
-                        0 0 60px rgba(255, 105, 180, 0.2);
+                0 0 60px rgba(255, 105, 180, 0.2);
             object-fit: cover;
             max-height: 400px;
             border: 3px solid rgba(255, 255, 255, 0.8);
@@ -391,7 +487,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            perspective: 1200px;
         }
 
         .album-3d-title {
@@ -405,90 +500,193 @@
             z-index: 10;
         }
 
-        .carousel-3d {
-            width: 220px;
-            height: 220px;
+        .wrap {
+            height: 200px;
+            width: 200px;
             position: relative;
+            animation: rotate 15s infinite linear;
             transform-style: preserve-3d;
-            cursor: grab;
-            transition: transform 0.1s ease-out;
-            user-select: none;
-        }
-
-        .carousel-3d.dragging {
-            cursor: grabbing;
-            transition: none;
+            filter: drop-shadow(0 0 30px rgba(255, 105, 180, 0.5));
         }
 
         @media (max-width: 768px) {
-            .carousel-3d {
-                width: 180px;
-                height: 180px;
+            .wrap {
+                height: 150px;
+                width: 150px;
             }
 
-            .carousel-3d-item {
-                width: 150px !important;
+            .wrap span {
+                height: 75px !important;
+                width: 75px !important;
+            }
+
+            .wrap div {
                 height: 150px !important;
+                width: 150px !important;
             }
         }
 
-        .carousel-3d-item {
+        .wrap span {
+            display: block;
+            height: 100px;
+            width: 100px;
             position: absolute;
-            width: 180px;
-            height: 180px;
-            left: 50%;
-            top: 50%;
-            margin-left: -90px;
-            margin-top: -90px;
+            top: 50px;
+            left: 50px;
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
-            border: 3px solid rgba(255, 255, 255, 0.4);
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(255, 105, 180, 0.6),
-                        inset 0 0 15px rgba(255, 255, 255, 0.1);
-            backface-visibility: visible;
-            pointer-events: none;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
         }
 
-        .carousel-3d-item::before {
-            content: '';
+        .wrap div {
+            height: 200px;
+            width: 200px;
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255, 105, 180, 0.1), transparent);
-            border-radius: 7px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.4);
         }
 
-        @media (max-width: 768px) {
-            .carousel-3d-item {
-                margin-left: -75px;
-                margin-top: -75px;
+        .in-front {
+            transform: translateZ(50px);
+        }
+
+        .in-back {
+            transform: translateZ(-50px);
+        }
+
+        .in-left {
+            transform: rotateY(90deg) translateZ(50px);
+        }
+
+        .in-right {
+            transform: rotateY(-90deg) translateZ(50px);
+        }
+
+        .in-top {
+            transform: rotateX(90deg) translateZ(50px);
+        }
+
+        .in-bottom {
+            transform: rotateX(-90deg) translateZ(50px);
+        }
+
+        .out-front {
+            transform: translateZ(100px);
+        }
+
+        .out-back {
+            transform: translateZ(-100px);
+        }
+
+        .out-left {
+            transform: rotateY(90deg) translateZ(100px);
+        }
+
+        .out-right {
+            transform: rotateY(-90deg) translateZ(100px);
+        }
+
+        .out-top {
+            transform: rotateX(90deg) translateZ(100px);
+        }
+
+        .out-bottom {
+            transform: rotateX(-90deg) translateZ(100px);
+        }
+
+        .wrap:hover .out-front,
+        .wrap.touched .out-front {
+            transform: translateZ(200px);
+        }
+
+        .wrap:hover .out-back,
+        .wrap.touched .out-back {
+            transform: translateZ(-200px);
+        }
+
+        .wrap:hover .out-left,
+        .wrap.touched .out-left {
+            transform: rotateY(90deg) translateZ(200px);
+        }
+
+        .wrap:hover .out-right,
+        .wrap.touched .out-right {
+            transform: rotateY(-90deg) translateZ(200px);
+        }
+
+        .wrap:hover .out-top,
+        .wrap.touched .out-top {
+            transform: rotateX(90deg) translateZ(200px);
+        }
+
+        .wrap:hover .out-bottom,
+        .wrap.touched .out-bottom {
+            transform: rotateX(-90deg) translateZ(200px);
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+
+            100% {
+                transform: rotateX(360deg) rotateY(360deg);
             }
         }
 
-        /* 拖拽提示 */
-        .drag-hint {
-            position: absolute;
-            bottom: 120px;
+        /* ============ 导航按钮 ============ */
+        .nav-buttons {
+            position: fixed;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 14px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            animation: fadeInOut 3s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 5;
+            display: flex;
+            gap: 20px;
+            z-index: 100;
         }
 
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 182, 193, 0.5);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.3);
+            font-size: 24px;
         }
 
-        /* ============ 页面指示器 ============ */
+        .nav-btn:hover {
+            background: white;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.5),
+                0 0 40px rgba(255, 105, 180, 0.3);
+            border-color: #ff69b4;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .nav-btn:disabled:hover {
+            transform: none;
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.3);
+        }
+
+        /* ============ 爱心形状指示器 (SVG) ============ */
         .page-indicator {
             position: fixed;
             top: 20px;
@@ -552,9 +750,19 @@
         }
 
         @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            10% { transform: scale(1.1); }
-            20% { transform: scale(1); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            10% {
+                transform: scale(1.1);
+            }
+
+            20% {
+                transform: scale(1);
+            }
         }
 
         .indicator-heart:hover svg {
@@ -577,15 +785,32 @@
         .heart {
             position: absolute;
             animation: float-up-continuous 15s infinite ease-in-out;
-            width: 20px;
-            height: 20px;
         }
 
-        .heart svg {
-            width: 100%;
-            height: 100%;
-            fill: url(#heartGradientFloat);
-            filter: drop-shadow(0 0 8px rgba(255, 105, 180, 0.6));
+        .heart-shape {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            transform: rotate(-45deg);
+        }
+
+        .heart-shape::before,
+        .heart-shape::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.6);
+        }
+
+        .heart-shape::before {
+            left: -10px;
+        }
+
+        .heart-shape::after {
+            top: -10px;
         }
 
         @keyframes float-up-continuous {
@@ -593,12 +818,15 @@
                 transform: translateY(100vh) rotate(0deg) scale(0.5);
                 opacity: 0;
             }
+
             10% {
                 opacity: 0.9;
             }
+
             90% {
                 opacity: 0.9;
             }
+
             100% {
                 transform: translateY(-10vh) rotate(360deg) scale(0.8);
                 opacity: 0;
@@ -614,7 +842,7 @@
             height: 100%;
             pointer-events: none;
             overflow: hidden;
-            z-index: 50;
+            z-index: 1;
         }
 
         .star {
@@ -624,21 +852,24 @@
             background: white;
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.9),
-                        0 0 20px rgba(255, 255, 255, 0.6);
+                0 0 20px rgba(255, 255, 255, 0.6);
             animation: twinkle 3s infinite ease-in-out;
         }
 
         @keyframes twinkle {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 0.7;
                 transform: scale(1);
                 box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
             }
+
             50% {
                 opacity: 1;
                 transform: scale(1.5);
                 box-shadow: 0 0 20px rgba(255, 255, 255, 1),
-                            0 0 30px rgba(255, 182, 193, 0.8);
+                    0 0 30px rgba(255, 182, 193, 0.8);
             }
         }
 
@@ -651,7 +882,7 @@
             height: 100%;
             pointer-events: none;
             overflow: hidden;
-            z-index: 50;
+            z-index: 1;
         }
 
         .petal {
@@ -668,28 +899,45 @@
                 transform: translateY(-10vh) rotate(0deg);
                 opacity: 0;
             }
+
             10% {
                 opacity: 0.85;
             }
+
             90% {
                 opacity: 0.85;
             }
+
             100% {
                 transform: translateY(110vh) rotate(720deg);
                 opacity: 0;
             }
         }
 
-        /* ============ 光晕效果 - 简化以提高性能 ============ */
+        /* ============ 光晕效果 ============ */
         .glow-effect {
             position: fixed;
-            width: 300px;
-            height: 300px;
+            width: 400px;
+            height: 400px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 105, 180, 0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 105, 180, 0.25) 0%, transparent 70%);
             pointer-events: none;
             z-index: 0;
-            opacity: 0.5;
+            animation: moveGlow 25s infinite ease-in-out;
+        }
+
+        @keyframes moveGlow {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: translate(-30%, -30%) scale(1.5);
+                opacity: 1;
+            }
         }
 
         /* ============ 结尾页面特殊样式 ============ */
@@ -727,10 +975,13 @@
         }
 
         @keyframes titleGlow {
-            0%, 100% {
+
+            0%,
+            100% {
                 filter: drop-shadow(0 0 30px rgba(255, 105, 180, 0.7));
                 transform: scale(1);
             }
+
             50% {
                 filter: drop-shadow(0 0 50px rgba(255, 105, 180, 1));
                 transform: scale(1.02);
@@ -766,13 +1017,28 @@
             margin: 0 10px;
         }
 
-        .ending-hearts span:nth-child(1) { animation-delay: 0s; }
-        .ending-hearts span:nth-child(2) { animation-delay: 0.3s; }
-        .ending-hearts span:nth-child(3) { animation-delay: 0.6s; }
+        .ending-hearts span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .ending-hearts span:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .ending-hearts span:nth-child(3) {
+            animation-delay: 0.6s;
+        }
 
         @keyframes floatHeart {
-            0%, 100% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(-20px) scale(1.1); }
+
+            0%,
+            100% {
+                transform: translateY(0px) scale(1);
+            }
+
+            50% {
+                transform: translateY(-20px) scale(1.1);
+            }
         }
 
         /* ============ 倒计时样式 ============ */
@@ -794,8 +1060,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         .days-label {
@@ -816,11 +1089,26 @@
         /* ============ 响应式设计 ============ */
         @media (max-width: 768px) {
             .cover-title {
-                font-size: 36px;
+                font-size: 42px;
+                letter-spacing: 3px;
+            }
+
+            .cover-hearts {
+                font-size: 42px;
+                margin: 20px 0;
             }
 
             .cover-subtitle {
-                font-size: 20px;
+                font-size: 22px;
+            }
+
+            .cover-date {
+                font-size: 16px;
+            }
+
+            .cover-hint {
+                bottom: 30px;
+                font-size: 13px;
             }
 
             .content-wrapper {
@@ -898,11 +1186,6 @@
                 <stop offset="0%" style="stop-color:#ff69b4;stop-opacity:1" />
                 <stop offset="100%" style="stop-color:#ff1493;stop-opacity:1" />
             </linearGradient>
-            <linearGradient id="heartGradientFloat" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#ffb6c1;stop-opacity:0.9" />
-                <stop offset="50%" style="stop-color:#ff69b4;stop-opacity:0.8" />
-                <stop offset="100%" style="stop-color:#ff1493;stop-opacity:0.9" />
-            </linearGradient>
         </defs>
     </svg>
 
@@ -911,7 +1194,8 @@
         <div class="password-container">
             <h1>💕 专属密码 💕</h1>
             <p>请输入密码查看我们的回忆</p>
-            <input type="password" class="password-input" id="password-input" placeholder="请输入密码" maxlength="7" autocomplete="off">
+            <input type="password" class="password-input" id="password-input" placeholder="请输入密码" maxlength="7"
+                autocomplete="off">
             <button class="password-btn" onclick="checkPassword()">解锁回忆</button>
             <p class="password-error" id="password-error">密码错误，请重试</p>
         </div>
@@ -938,9 +1222,23 @@
         <div class="pages-container" id="pages-container">
             <!-- 第1页：封面 -->
             <div class="page active cover-page">
-                <h1 class="cover-title">我们的100天</h1>
-                <p class="cover-subtitle">相遇是缘，相知是幸</p>
-                <p class="cover-date">一起走过的每一天都值得纪念</p>
+                <div class="cover-content">
+                    <h1 class="cover-title">我们的100天</h1>
+                    <div class="cover-hearts">
+                        <span>💖</span>
+                        <span>✨</span>
+                        <span>💖</span>
+                    </div>
+                    <p class="cover-subtitle">相遇是缘 · 相知是幸</p>
+                    <p class="cover-date">
+                        一起走过的每一天都值得纪念<br>
+                        每一个瞬间都因你而珍贵
+                    </p>
+                </div>
+                <div class="cover-hint">
+                    <span>👉</span>
+                    <span>左右滑动开始我们的回忆之旅</span>
+                </div>
             </div>
 
             <!-- 第2页：倒计时 -->
@@ -1143,10 +1441,20 @@
             <div class="page album-3d-page">
                 <h2 class="album-3d-title">💕 我们的相册 💕</h2>
                 <div class="album-3d-container">
-                    <div class="carousel-3d" id="carousel-3d">
-                        <!-- 12个照片面将由JavaScript动态生成 -->
+                    <div class="wrap" id="album-wrap">
+                        <span class="in-front"></span>
+                        <span class="in-back"></span>
+                        <span class="in-left"></span>
+                        <span class="in-right"></span>
+                        <span class="in-top"></span>
+                        <span class="in-bottom"></span>
+                        <div class="out-front"></div>
+                        <div class="out-back"></div>
+                        <div class="out-left"></div>
+                        <div class="out-right"></div>
+                        <div class="out-top"></div>
+                        <div class="out-bottom"></div>
                     </div>
-                    <div class="drag-hint">← 滑动旋转 →</div>
                 </div>
             </div>
 
@@ -1203,7 +1511,8 @@
                     <h2 class="content-title">🎉 纪念日快乐</h2>
                     <p class="content-date">100天纪念</p>
                     <img src="images/t1.jpg" alt="纪念日快乐" class="content-photo" loading="lazy">
-                    <p class="content-text" style="text-align: center; font-size: 18px; color: #ff69b4; line-height: 2;">
+                    <p class="content-text"
+                        style="text-align: center; font-size: 18px; color: #ff69b4; line-height: 2;">
                         今天是我们的100天纪念日<br>
                         这100天里，有欢笑有泪水<br>
                         但更多的是幸福和甜蜜<br><br>
@@ -1222,7 +1531,8 @@
                 <div class="content-wrapper">
                     <h2 class="content-title">💌 想对你说</h2>
                     <p class="content-date">写给最爱的你</p>
-                    <p class="content-text" style="text-align: center; font-size: 18px; color: #ff69b4; line-height: 2;">
+                    <p class="content-text"
+                        style="text-align: center; font-size: 18px; color: #ff69b4; line-height: 2;">
                         亲爱的，<br><br>
 
                         这100天里，你给了我太多的快乐和感动。<br>
@@ -1268,6 +1578,12 @@
                 </div>
             </div>
         </div>
+
+        <!-- 导航按钮 -->
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prev-btn" onclick="prevPage()">◀</button>
+            <button class="nav-btn" id="next-btn" onclick="nextPage()">▶</button>
+        </div>
     </div>
 
     <script>
@@ -1284,7 +1600,7 @@
         const passwordError = document.getElementById('password-error');
 
         // 检查是否已经解锁
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             if (localStorage.getItem('unlocked') === 'true') {
                 passwordPage.classList.add('hidden');
                 mainContent.classList.add('active');
@@ -1330,6 +1646,7 @@
             createPageIndicators();
             init3DAlbum();
             updateDaysCounter();
+            updateNavButtons();
             setupEventListeners();
             preloadImages();
         }
@@ -1363,10 +1680,10 @@
                 if (img.complete) {
                     img.classList.add('loaded');
                 } else {
-                    img.addEventListener('load', function() {
+                    img.addEventListener('load', function () {
                         this.classList.add('loaded');
                     });
-                    img.addEventListener('error', function() {
+                    img.addEventListener('error', function () {
                         this.classList.add('loaded');
                     });
                 }
@@ -1376,30 +1693,76 @@
         // ============ 设置事件监听器 ============
         function setupEventListeners() {
             let touchStartX = 0;
+            let touchStartY = 0;
             let touchEndX = 0;
+            let touchEndY = 0;
             let touchStartTime = 0;
+            let touchStartTarget = null;
 
-            document.addEventListener('touchstart', function(e) {
+            document.addEventListener('touchstart', function (e) {
                 touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
                 touchStartTime = Date.now();
+                touchStartTarget = e.target;
             }, { passive: true });
 
-            document.addEventListener('touchend', function(e) {
+            document.addEventListener('touchend', function (e) {
                 touchEndX = e.changedTouches[0].screenX;
+                touchEndY = e.changedTouches[0].screenY;
                 const touchDuration = Date.now() - touchStartTime;
 
                 // 只有快速滑动才触发切换
-                if (touchDuration < 300) {
+                if (touchDuration < 400) {
                     handleSwipe();
                 }
             }, { passive: true });
 
             function handleSwipe() {
                 const swipeThreshold = 50;
-                const diff = touchStartX - touchEndX;
+                const diffX = touchStartX - touchEndX;
+                const diffY = touchStartY - touchEndY;
 
-                if (Math.abs(diff) > swipeThreshold) {
-                    if (diff > 0) {
+                // 判断是否在特殊区域内
+                const inAlbumArea = touchStartTarget && (
+                    touchStartTarget.closest('.album-3d-container') ||
+                    touchStartTarget.closest('.wrap')
+                );
+
+                const inScrollableContent = touchStartTarget && (
+                    touchStartTarget.closest('.content-page') ||
+                    touchStartTarget.closest('.content-wrapper')
+                );
+
+                // 如果在3D相册区域，完全阻止页面切换
+                if (inAlbumArea) {
+                    return;
+                }
+
+                // 判断滑动方向：水平还是垂直
+                const isHorizontalSwipe = Math.abs(diffX) > Math.abs(diffY);
+
+                // 如果在可滚动内容区域
+                if (inScrollableContent) {
+                    // 如果是垂直滑动，不触发页面切换
+                    if (!isHorizontalSwipe) {
+                        return;
+                    }
+
+                    // 检查内容是否可以滚动
+                    const contentPage = touchStartTarget.closest('.content-page');
+                    if (contentPage) {
+                        const hasVerticalScroll = contentPage.scrollHeight > contentPage.clientHeight;
+
+                        // 如果内容需要滚动且滑动幅度不够大，优先滚动
+                        if (hasVerticalScroll && Math.abs(diffX) < 80) {
+                            return;
+                        }
+                    }
+                }
+
+                // 确保是明显的水平滑动
+                if (isHorizontalSwipe && Math.abs(diffX) > swipeThreshold) {
+                    if (diffX > 0) {
                         nextPage();
                     } else {
                         prevPage();
@@ -1407,7 +1770,7 @@
                 }
             }
 
-            document.addEventListener('keydown', function(e) {
+            document.addEventListener('keydown', function (e) {
                 if (e.key === 'ArrowLeft') prevPage();
                 if (e.key === 'ArrowRight') nextPage();
             });
@@ -1420,6 +1783,7 @@
                 pages[currentPage].classList.remove('active');
                 currentPage++;
                 pages[currentPage].classList.add('active');
+                updateNavButtons();
                 updateIndicators();
             }
         }
@@ -1430,7 +1794,17 @@
                 pages[currentPage].classList.remove('active');
                 currentPage--;
                 pages[currentPage].classList.add('active');
+                updateNavButtons();
                 updateIndicators();
+            }
+        }
+
+        function updateNavButtons() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            if (prevBtn && nextBtn) {
+                prevBtn.disabled = currentPage === 0;
+                nextBtn.disabled = currentPage === totalPages - 1;
             }
         }
 
@@ -1495,6 +1869,7 @@
                 pages[currentPage].classList.remove('active');
                 currentPage = pageIndex;
                 pages[currentPage].classList.add('active');
+                updateNavButtons();
                 updateIndicators();
             }
         }
@@ -1512,24 +1887,17 @@
                     const heart = document.createElement('div');
                     heart.className = 'heart';
 
-                    // 创建SVG心形
-                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                    svg.setAttribute('viewBox', '0 0 24 24');
-                    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-
-                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    path.setAttribute('d', 'M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z');
-
-                    svg.appendChild(path);
-                    heart.appendChild(svg);
+                    const heartShape = document.createElement('div');
+                    heartShape.className = 'heart-shape';
+                    heart.appendChild(heartShape);
 
                     heart.style.left = Math.random() * 100 + '%';
                     heart.style.animationDuration = (Math.random() * 6 + 12) + 's';
                     heart.style.animationDelay = (Math.random() * 8) + 's';
 
                     const size = Math.random() * 12 + 12;
-                    heart.style.width = size + 'px';
-                    heart.style.height = size + 'px';
+                    heartShape.style.width = size + 'px';
+                    heartShape.style.height = size + 'px';
 
                     container.appendChild(heart);
                 }, i * 200);
@@ -1577,108 +1945,29 @@
 
         // ============ 3D相册 ============
         function init3DAlbum() {
-            const carousel = document.getElementById('carousel-3d');
-            if (!carousel) return;
+            const wrap = document.getElementById('album-wrap');
+            if (!wrap) return;
 
-            const totalPanels = 12;
-            const angleStep = 360 / totalPanels; // 30度
-            const radius = 300; // 旋转半径（缩小）
+            const children = wrap.children;
 
-            // 照片列表 - 你可以替换成不同的照片
-            const photos = [
-                'images/t1.jpg',
-                'images/t1.jpg',
-                'images/t1.jpg',
-                'images/t1.jpg',
-                'images/t1.jpg',
-                'images/t1.jpg',
-                'images/t1.jpg',
-                'images/t1.jpg',
-                'images/t1.jpg',
-                'images/t1.jpg',
-                'images/t1.jpg',
-                'images/t1.jpg'
-            ];
-
-            // 创建12个面
-            for (let i = 0; i < totalPanels; i++) {
-                const item = document.createElement('div');
-                item.className = 'carousel-3d-item';
-                item.style.backgroundImage = `url(${photos[i]})`;
-
-                const angle = angleStep * i;
-                item.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
-
-                carousel.appendChild(item);
+            for (let i = 0; i < children.length; i++) {
+                children[i].style.backgroundImage = 'url(images/t1.jpg)';
             }
 
-            // 拖拽旋转逻辑
-            let currentRotation = 0;
-            let isDragging = false;
-            let startX = 0;
-            let startRotation = 0;
-
-            // 更新旋转角度
-            function updateRotation(angle) {
-                currentRotation = angle;
-                carousel.style.transform = `rotateY(${currentRotation}deg)`;
-            }
-
-            // 鼠标事件
-            carousel.addEventListener('mousedown', function(e) {
-                isDragging = true;
-                startX = e.clientX;
-                startRotation = currentRotation;
-                carousel.classList.add('dragging');
-            });
-
-            document.addEventListener('mousemove', function(e) {
-                if (!isDragging) return;
-
-                const deltaX = e.clientX - startX;
-                const rotationDelta = deltaX * 0.5; // 旋转灵敏度
-                updateRotation(startRotation + rotationDelta);
-            });
-
-            document.addEventListener('mouseup', function() {
-                if (isDragging) {
-                    isDragging = false;
-                    carousel.classList.remove('dragging');
-                }
-            });
-
-            // 触摸事件
-            carousel.addEventListener('touchstart', function(e) {
+            let touchTimeout;
+            wrap.addEventListener('touchstart', function (e) {
                 e.stopPropagation();
-                e.preventDefault();
-                isDragging = true;
-                startX = e.touches[0].clientX;
-                startRotation = currentRotation;
-                carousel.classList.add('dragging');
+                this.classList.add('touched');
+                clearTimeout(touchTimeout);
             });
 
-            carousel.addEventListener('touchmove', function(e) {
-                if (!isDragging) return;
-
+            wrap.addEventListener('touchend', function (e) {
                 e.stopPropagation();
-                e.preventDefault();
-
-                const deltaX = e.touches[0].clientX - startX;
-                const rotationDelta = deltaX * 0.5; // 旋转灵敏度
-                updateRotation(startRotation + rotationDelta);
+                const self = this;
+                touchTimeout = setTimeout(() => {
+                    self.classList.remove('touched');
+                }, 300);
             });
-
-            carousel.addEventListener('touchend', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                if (isDragging) {
-                    isDragging = false;
-                    carousel.classList.remove('dragging');
-                }
-            });
-
-            // 初始化旋转角度
-            updateRotation(0);
         }
 
         // ============ 倒计时计算 ============
