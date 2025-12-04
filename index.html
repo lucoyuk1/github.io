@@ -210,11 +210,45 @@
             animation: gradientShift 15s ease infinite;
         }
 
+        /* ============ 背景爱心绘制动画 ============ */
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(80vw, 80vh);
+            height: min(80vw, 80vh);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100,170 C60,140 20,110 20,70 C20,50 30,30 50,30 C70,30 85,40 100,55 C115,40 130,30 150,30 C170,30 180,50 180,70 C180,110 140,140 100,170 Z' fill='none' stroke='rgba(255, 182, 193, 0.15)' stroke-width='2' stroke-dasharray='1000' stroke-dashoffset='1000'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.6;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .page.active::before {
+            animation: drawHeart 3s ease-out forwards;
+        }
+
+        @keyframes drawHeart {
+            to {
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100,170 C60,140 20,110 20,70 C20,50 30,30 50,30 C70,30 85,40 100,55 C115,40 130,30 150,30 C170,30 180,50 180,70 C180,110 140,140 100,170 Z' fill='none' stroke='rgba(255, 182, 193, 0.15)' stroke-width='2' stroke-dasharray='1000' stroke-dashoffset='0'/%3E%3C/svg%3E");
+            }
+        }
+
         .page.active {
             opacity: 1;
             visibility: visible;
             transform: translateX(0);
             z-index: 2;
+        }
+
+        /* 确保页面内容在背景爱心之上 */
+        .page > * {
+            position: relative;
+            z-index: 1;
         }
 
         /* ============ 封面页 ============ */
@@ -343,6 +377,11 @@
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
+        }
+
+        /* 3D相册页面不显示背景爱心绘制 */
+        .album-3d-page::before {
+            display: none;
         }
 
         .album-3d-container {
@@ -495,7 +534,7 @@
             box-shadow: 0 5px 20px rgba(255, 105, 180, 0.3);
         }
 
-        /* ============ 爱心形状指示器 ============ */
+        /* ============ 爱心形状指示器 (SVG) ============ */
         .page-indicator {
             position: fixed;
             top: 20px;
@@ -533,60 +572,40 @@
         }
 
         .indicator-heart {
-            position: relative;
-            width: 10px;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.5);
-            transform: rotate(-45deg);
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 16px;
+            height: 16px;
         }
 
-        .indicator-heart::before,
-        .indicator-heart::after {
-            content: '';
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
+        .indicator-heart svg {
+            width: 100%;
+            height: 100%;
+            fill: rgba(255, 255, 255, 0.5);
+            filter: drop-shadow(0 2px 4px rgba(255, 105, 180, 0.3));
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .indicator-heart::before {
-            top: 0;
-            left: -5px;
-        }
-
-        .indicator-heart::after {
-            top: -5px;
-            left: 0;
         }
 
         .indicator-heart.active {
-            width: 14px;
-            height: 14px;
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            width: 20px;
+            height: 20px;
         }
 
-        .indicator-heart.active::before,
-        .indicator-heart.active::after {
-            width: 14px;
-            height: 14px;
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
-            box-shadow: 0 0 15px rgba(255, 105, 180, 0.8);
+        .indicator-heart.active svg {
+            fill: url(#heartGradient);
+            filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.8));
+            animation: heartbeat 1.5s ease-in-out infinite;
         }
 
-        .indicator-heart.active::before {
-            left: -7px;
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10% { transform: scale(1.1); }
+            20% { transform: scale(1); }
         }
 
-        .indicator-heart.active::after {
-            top: -7px;
-        }
-
-        .indicator-heart.hidden {
-            display: none;
+        .indicator-heart:hover svg {
+            fill: rgba(255, 182, 193, 0.8);
+            transform: scale(1.1);
         }
 
         /* ============ 装饰元素 - 爱心（持续显示）============ */
@@ -747,6 +766,97 @@
             }
         }
 
+        /* ============ 结尾页面特殊样式 ============ */
+        .ending-page {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+            background-size: 400% 400% !important;
+        }
+
+        .ending-page::before {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100,170 C60,140 20,110 20,70 C20,50 30,30 50,30 C70,30 85,40 100,55 C115,40 130,30 150,30 C170,30 180,50 180,70 C180,110 140,140 100,170 Z' fill='none' stroke='rgba(255, 105, 180, 0.3)' stroke-width='3' stroke-dasharray='1000' stroke-dashoffset='1000'/%3E%3C/svg%3E") !important;
+            filter: drop-shadow(0 0 30px rgba(255, 105, 180, 0.6));
+            width: min(90vw, 90vh) !important;
+            height: min(90vw, 90vh) !important;
+        }
+
+        .ending-page.active::before {
+            animation: drawHeartGlow 4s ease-out forwards !important;
+        }
+
+        @keyframes drawHeartGlow {
+            to {
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100,170 C60,140 20,110 20,70 C20,50 30,30 50,30 C70,30 85,40 100,55 C115,40 130,30 150,30 C170,30 180,50 180,70 C180,110 140,140 100,170 Z' fill='none' stroke='rgba(255, 105, 180, 0.3)' stroke-width='3' stroke-dasharray='1000' stroke-dashoffset='0'/%3E%3C/svg%3E") !important;
+            }
+        }
+
+        .ending-content {
+            text-align: center;
+            max-width: 800px;
+            padding: 40px;
+        }
+
+        .ending-title {
+            font-size: 72px;
+            background: linear-gradient(135deg, #fff 0%, #ffb6c1 50%, #ff69b4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out, titleGlow 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 40px rgba(255, 105, 180, 0.9));
+            letter-spacing: 4px;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 30px rgba(255, 105, 180, 0.7));
+                transform: scale(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 50px rgba(255, 105, 180, 1));
+                transform: scale(1.02);
+            }
+        }
+
+        .ending-subtitle {
+            font-size: 28px;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out 0.3s backwards;
+            text-shadow: 0 4px 20px rgba(255, 105, 180, 0.8);
+            font-weight: 500;
+        }
+
+        .ending-message {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 2;
+            animation: fadeInUp 1s ease-out 0.6s backwards;
+            text-shadow: 0 2px 15px rgba(255, 105, 180, 0.5);
+        }
+
+        .ending-hearts {
+            font-size: 48px;
+            margin: 30px 0;
+            animation: fadeInUp 1s ease-out 0.9s backwards;
+        }
+
+        .ending-hearts span {
+            display: inline-block;
+            animation: floatHeart 3s ease-in-out infinite;
+            margin: 0 10px;
+        }
+
+        .ending-hearts span:nth-child(1) { animation-delay: 0s; }
+        .ending-hearts span:nth-child(2) { animation-delay: 0.3s; }
+        .ending-hearts span:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
         /* ============ 倒计时样式 ============ */
         .countdown-wrapper {
             text-align: center;
@@ -863,6 +973,16 @@
 </head>
 
 <body>
+    <!-- SVG 定义 -->
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#ff69b4;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#ff1493;stop-opacity:1" />
+            </linearGradient>
+        </defs>
+    </svg>
+
     <!-- 密码保护页面 -->
     <div id="password-page">
         <div class="password-container">
@@ -1210,10 +1330,29 @@
             </div>
 
             <!-- 第22页：永远爱你 -->
-            <div class="page cover-page">
-                <h1 class="cover-title" style="font-size: 60px;">Forever Love</h1>
-                <p class="cover-subtitle">我会永远爱你</p>
-                <p class="cover-date">❤️ 今天 · 明天 · 每一天 ❤️</p>
+            <div class="page ending-page">
+                <div class="ending-content">
+                    <h1 class="ending-title">Forever Love</h1>
+                    <div class="ending-hearts">
+                        <span>💖</span>
+                        <span>✨</span>
+                        <span>💖</span>
+                    </div>
+                    <p class="ending-subtitle">我会永远爱你</p>
+                    <p class="ending-message">
+                        在无数个日夜里<br>
+                        你是我心中最温柔的光<br>
+                        照亮了我前行的每一步路<br><br>
+
+                        过去的每一天都是珍贵的回忆<br>
+                        未来的每一天都值得期待<br>
+                        因为有你在身边<br><br>
+
+                        <strong style="font-size: 24px; color: #ffb6c1;">❤️ 今天 · 明天 · 每一天 ❤️</strong><br><br>
+
+                        <span style="font-size: 16px; opacity: 0.8;">—— 永远爱你的人</span>
+                    </p>
+                </div>
             </div>
         </div>
 
@@ -1393,6 +1532,18 @@
                 heart.className = 'indicator-heart';
                 heart.dataset.page = i;
                 if (i === currentPage) heart.classList.add('active');
+
+                // 创建SVG心形
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', 'M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z');
+
+                svg.appendChild(path);
+                heart.appendChild(svg);
+
                 heart.onclick = () => goToPage(i);
                 container.appendChild(heart);
             }
@@ -1400,10 +1551,12 @@
             // 更新导航按钮状态
             const prevBtn = document.getElementById('indicator-prev');
             const nextBtn = document.getElementById('indicator-next');
-            prevBtn.style.opacity = startIndex === 0 ? '0.3' : '1';
-            prevBtn.style.cursor = startIndex === 0 ? 'not-allowed' : 'pointer';
-            nextBtn.style.opacity = (startIndex + maxVisible) >= totalPages ? '0.3' : '1';
-            nextBtn.style.cursor = (startIndex + maxVisible) >= totalPages ? 'not-allowed' : 'pointer';
+            if (prevBtn && nextBtn) {
+                prevBtn.style.opacity = startIndex === 0 ? '0.3' : '1';
+                prevBtn.style.cursor = startIndex === 0 ? 'not-allowed' : 'pointer';
+                nextBtn.style.opacity = (startIndex + maxVisible) >= totalPages ? '0.3' : '1';
+                nextBtn.style.cursor = (startIndex + maxVisible) >= totalPages ? 'not-allowed' : 'pointer';
+            }
         }
 
         function indicatorPrev() {
