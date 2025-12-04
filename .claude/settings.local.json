@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(gh repo view:*)",
+      "Bash(gh auth status:*)",
+      "Bash(git ls-remote:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

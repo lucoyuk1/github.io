@@ -502,21 +502,41 @@
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            align-items: center;
+            gap: 10px;
             z-index: 100;
-            max-width: 90%;
-            justify-content: center;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+        }
+
+        .indicator-nav {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s;
+            padding: 0 5px;
+        }
+
+        .indicator-nav:hover {
+            color: white;
+            transform: scale(1.2);
+        }
+
+        .indicator-hearts {
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
 
         .indicator-heart {
             position: relative;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.5);
             transform: rotate(-45deg);
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -526,40 +546,47 @@
         .indicator-heart::after {
             content: '';
             position: absolute;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             background: rgba(255, 255, 255, 0.5);
             border-radius: 50%;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .indicator-heart::before {
-            left: -6px;
+            top: 0;
+            left: -5px;
         }
 
         .indicator-heart::after {
-            top: -6px;
+            top: -5px;
+            left: 0;
         }
 
         .indicator-heart.active {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
         }
 
         .indicator-heart.active::before,
         .indicator-heart.active::after {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             background: linear-gradient(135deg, #ff69b4, #ff1493);
             box-shadow: 0 0 15px rgba(255, 105, 180, 0.8);
         }
 
         .indicator-heart.active::before {
-            left: -8px;
+            left: -7px;
         }
 
         .indicator-heart.active::after {
-            top: -8px;
+            top: -7px;
+        }
+
+        .indicator-heart.hidden {
+            display: none;
         }
 
         /* ============ 装饰元素 - 爱心（持续显示）============ */
@@ -610,18 +637,14 @@
                 transform: translateY(100vh) rotate(0deg) scale(0.5);
                 opacity: 0;
             }
-            5% {
-                opacity: 0.8;
-            }
-            50% {
+            10% {
                 opacity: 0.9;
-                transform: translateY(50vh) rotate(180deg) scale(1);
             }
-            95% {
-                opacity: 0.8;
+            90% {
+                opacity: 0.9;
             }
             100% {
-                transform: translateY(-10vh) rotate(360deg) scale(0.5);
+                transform: translateY(-10vh) rotate(360deg) scale(0.8);
                 opacity: 0;
             }
         }
@@ -651,15 +674,15 @@
 
         @keyframes twinkle {
             0%, 100% {
-                opacity: 0.4;
+                opacity: 0.7;
                 transform: scale(1);
-                box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
             }
             50% {
                 opacity: 1;
                 transform: scale(1.5);
-                box-shadow: 0 0 20px rgba(255, 255, 255, 0.9),
-                            0 0 30px rgba(255, 182, 193, 0.5);
+                box-shadow: 0 0 20px rgba(255, 255, 255, 1),
+                            0 0 30px rgba(255, 182, 193, 0.8);
             }
         }
 
@@ -689,11 +712,11 @@
                 transform: translateY(-10vh) rotate(0deg);
                 opacity: 0;
             }
-            5% {
-                opacity: 0.8;
+            10% {
+                opacity: 0.85;
             }
-            95% {
-                opacity: 0.8;
+            90% {
+                opacity: 0.85;
             }
             100% {
                 transform: translateY(110vh) rotate(720deg);
@@ -862,7 +885,11 @@
         <div class="glow-effect" style="top: 50%; left: 50%; animation-delay: -20s;"></div>
 
         <!-- 爱心指示器 -->
-        <div class="page-indicator" id="page-indicator"></div>
+        <div class="page-indicator" id="page-indicator">
+            <span class="indicator-nav" id="indicator-prev" onclick="indicatorPrev()">◀</span>
+            <div class="indicator-hearts" id="indicator-hearts"></div>
+            <span class="indicator-nav" id="indicator-next" onclick="indicatorNext()">▶</span>
+        </div>
 
         <!-- 页面容器 -->
         <div class="pages-container" id="pages-container">
@@ -1351,15 +1378,43 @@
         }
 
         // ============ 爱心形状指示器 ============
+        const INDICATORS_PER_PAGE = 7; // 每次显示7个指示器
+        let indicatorOffset = 0;
+
         function createPageIndicators() {
-            const indicator = document.getElementById('page-indicator');
-            indicator.innerHTML = '';
-            for (let i = 0; i < totalPages; i++) {
+            const container = document.getElementById('indicator-hearts');
+            container.innerHTML = '';
+
+            const maxVisible = Math.min(INDICATORS_PER_PAGE, totalPages);
+            const startIndex = Math.max(0, Math.min(currentPage - Math.floor(maxVisible / 2), totalPages - maxVisible));
+
+            for (let i = startIndex; i < startIndex + maxVisible && i < totalPages; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'indicator-heart';
-                if (i === 0) heart.classList.add('active');
+                heart.dataset.page = i;
+                if (i === currentPage) heart.classList.add('active');
                 heart.onclick = () => goToPage(i);
-                indicator.appendChild(heart);
+                container.appendChild(heart);
+            }
+
+            // 更新导航按钮状态
+            const prevBtn = document.getElementById('indicator-prev');
+            const nextBtn = document.getElementById('indicator-next');
+            prevBtn.style.opacity = startIndex === 0 ? '0.3' : '1';
+            prevBtn.style.cursor = startIndex === 0 ? 'not-allowed' : 'pointer';
+            nextBtn.style.opacity = (startIndex + maxVisible) >= totalPages ? '0.3' : '1';
+            nextBtn.style.cursor = (startIndex + maxVisible) >= totalPages ? 'not-allowed' : 'pointer';
+        }
+
+        function indicatorPrev() {
+            if (currentPage > 0) {
+                prevPage();
+            }
+        }
+
+        function indicatorNext() {
+            if (currentPage < totalPages - 1) {
+                nextPage();
             }
         }
 
@@ -1375,17 +1430,14 @@
         }
 
         function updateIndicators() {
-            const hearts = document.querySelectorAll('.indicator-heart');
-            hearts.forEach((heart, index) => {
-                heart.classList.toggle('active', index === currentPage);
-            });
+            createPageIndicators(); // 重新创建指示器以更新位置
         }
 
         // ============ 持续显示的爱心 ============
         function createContinuousHearts() {
             const container = document.getElementById('floating-hearts');
-            // 创建20个爱心，持续循环显示
-            for (let i = 0; i < 20; i++) {
+            // 创建40个爱心，持续循环显示
+            for (let i = 0; i < 40; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('div');
                     heart.className = 'heart';
@@ -1395,22 +1447,22 @@
                     heart.appendChild(heartShape);
 
                     heart.style.left = Math.random() * 100 + '%';
-                    heart.style.animationDuration = (Math.random() * 5 + 10) + 's';
-                    heart.style.animationDelay = (Math.random() * 5) + 's';
+                    heart.style.animationDuration = (Math.random() * 6 + 12) + 's';
+                    heart.style.animationDelay = (Math.random() * 8) + 's';
 
-                    const size = Math.random() * 10 + 15;
+                    const size = Math.random() * 12 + 12;
                     heartShape.style.width = size + 'px';
                     heartShape.style.height = size + 'px';
 
                     container.appendChild(heart);
-                }, i * 300);
+                }, i * 200);
             }
         }
 
         // ============ 静态星星 ============
         function createStaticStars() {
             const container = document.getElementById('floating-stars');
-            for (let i = 0; i < 80; i++) {
+            for (let i = 0; i < 150; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.style.left = Math.random() * 100 + '%';
@@ -1418,7 +1470,7 @@
                 star.style.animationDelay = Math.random() * 3 + 's';
                 star.style.animationDuration = (Math.random() * 2 + 2) + 's';
 
-                const size = Math.random() * 3 + 2;
+                const size = Math.random() * 3 + 3;
                 star.style.width = size + 'px';
                 star.style.height = size + 'px';
 
@@ -1429,20 +1481,20 @@
         // ============ 持续显示的花瓣 ============
         function createContinuousPetals() {
             const container = document.getElementById('floating-petals');
-            for (let i = 0; i < 15; i++) {
+            for (let i = 0; i < 30; i++) {
                 setTimeout(() => {
                     const petal = document.createElement('div');
                     petal.className = 'petal';
                     petal.style.left = Math.random() * 100 + '%';
-                    petal.style.animationDuration = (Math.random() * 8 + 12) + 's';
-                    petal.style.animationDelay = (Math.random() * 5) + 's';
+                    petal.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                    petal.style.animationDelay = (Math.random() * 8) + 's';
 
-                    const size = Math.random() * 8 + 12;
+                    const size = Math.random() * 10 + 10;
                     petal.style.width = size + 'px';
                     petal.style.height = size + 'px';
 
                     container.appendChild(petal);
-                }, i * 500);
+                }, i * 400);
             }
         }
 
