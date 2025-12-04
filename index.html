@@ -488,53 +488,7 @@
             50% { opacity: 1; }
         }
 
-        /* ============ 导航按钮 ============ */
-        .nav-buttons {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
-            z-index: 100;
-        }
-
-        .nav-btn {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 182, 193, 0.5);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.3);
-            font-size: 24px;
-        }
-
-        .nav-btn:hover {
-            background: white;
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.5),
-                        0 0 40px rgba(255, 105, 180, 0.3);
-            border-color: #ff69b4;
-        }
-
-        .nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .nav-btn:disabled:hover {
-            transform: none;
-            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.3);
-        }
-
-        /* ============ 爱心形状指示器 (SVG) ============ */
+        /* ============ 页面指示器 ============ */
         .page-indicator {
             position: fixed;
             top: 20px;
@@ -1314,12 +1268,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- 导航按钮 -->
-        <div class="nav-buttons">
-            <button class="nav-btn" id="prev-btn" onclick="prevPage()">◀</button>
-            <button class="nav-btn" id="next-btn" onclick="nextPage()">▶</button>
-        </div>
     </div>
 
     <script>
@@ -1382,7 +1330,6 @@
             createPageIndicators();
             init3DAlbum();
             updateDaysCounter();
-            updateNavButtons();
             setupEventListeners();
             preloadImages();
         }
@@ -1473,7 +1420,6 @@
                 pages[currentPage].classList.remove('active');
                 currentPage++;
                 pages[currentPage].classList.add('active');
-                updateNavButtons();
                 updateIndicators();
             }
         }
@@ -1484,17 +1430,7 @@
                 pages[currentPage].classList.remove('active');
                 currentPage--;
                 pages[currentPage].classList.add('active');
-                updateNavButtons();
                 updateIndicators();
-            }
-        }
-
-        function updateNavButtons() {
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-            if (prevBtn && nextBtn) {
-                prevBtn.disabled = currentPage === 0;
-                nextBtn.disabled = currentPage === totalPages - 1;
             }
         }
 
@@ -1559,7 +1495,6 @@
                 pages[currentPage].classList.remove('active');
                 currentPage = pageIndex;
                 pages[currentPage].classList.add('active');
-                updateNavButtons();
                 updateIndicators();
             }
         }
@@ -1715,6 +1650,7 @@
             // 触摸事件
             carousel.addEventListener('touchstart', function(e) {
                 e.stopPropagation();
+                e.preventDefault();
                 isDragging = true;
                 startX = e.touches[0].clientX;
                 startRotation = currentRotation;
@@ -1724,6 +1660,9 @@
             carousel.addEventListener('touchmove', function(e) {
                 if (!isDragging) return;
 
+                e.stopPropagation();
+                e.preventDefault();
+
                 const deltaX = e.touches[0].clientX - startX;
                 const rotationDelta = deltaX * 0.5; // 旋转灵敏度
                 updateRotation(startRotation + rotationDelta);
@@ -1731,6 +1670,7 @@
 
             carousel.addEventListener('touchend', function(e) {
                 e.stopPropagation();
+                e.preventDefault();
                 if (isDragging) {
                     isDragging = false;
                     carousel.classList.remove('dragging');
