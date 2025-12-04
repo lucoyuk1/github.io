@@ -646,7 +646,7 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            display: flex;
+            display: none; /* 隐藏导航按钮，只保留指示器 */
             gap: 20px;
             z-index: 100;
         }
@@ -1142,37 +1142,9 @@
                 height: 10px;
             }
 
-            .indicator-heart::before,
-            .indicator-heart::after {
-                width: 10px;
-                height: 10px;
-            }
-
-            .indicator-heart::before {
-                left: -5px;
-            }
-
-            .indicator-heart::after {
-                top: -5px;
-            }
-
             .indicator-heart.active {
                 width: 14px;
                 height: 14px;
-            }
-
-            .indicator-heart.active::before,
-            .indicator-heart.active::after {
-                width: 14px;
-                height: 14px;
-            }
-
-            .indicator-heart.active::before {
-                left: -7px;
-            }
-
-            .indicator-heart.active::after {
-                top: -7px;
             }
         }
     </style>
