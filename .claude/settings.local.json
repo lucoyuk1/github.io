@@ -8,7 +8,8 @@
       "Bash(gh auth status:*)",
       "Bash(git ls-remote:*)",
       "Bash(git remote set-url:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

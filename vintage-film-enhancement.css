@@ -1,0 +1,152 @@
+/* ============ 复古胶片照片墙增强样式 ============ */
+
+/* 标题增强 - 复古打字机字体效果 */
+.countdown-header {
+    font-size: 26px !important;
+    letter-spacing: 3px !important;
+    font-style: italic !important;
+    text-shadow:
+        0 0 20px rgba(244, 228, 193, 0.4),
+        0 3px 10px rgba(0, 0, 0, 0.6) !important;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 35px !important;
+}
+
+/* 标题下装饰线 */
+.countdown-header::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #8b5a2b, transparent);
+    opacity: 0.5;
+}
+
+/* 照片墙容器优化 */
+.photo-wall {
+    gap: 25px !important;
+    perspective: 1200px !important;
+}
+
+/* 宝丽来照片 - 复古增强 */
+.polaroid-photo {
+    background: linear-gradient(135deg, #fcfcfc 0%, #f5f5f0 100%) !important;
+    padding: 14px 14px 48px 14px !important;
+    box-shadow:
+        0 6px 12px rgba(0, 0, 0, 0.4),
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        inset 0 0 0 1px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    filter: sepia(0.08) contrast(1.02);
+}
+
+/* 照片边缘老化效果 */
+.polaroid-photo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(139, 90, 43, 0.03) 0%, transparent 40%);
+    pointer-events: none;
+    border-radius: 2px;
+    z-index: 0;
+}
+
+/* 照片摆放角度优化 */
+.polaroid-photo:nth-child(1) {
+    transform: rotate(-6deg) translateY(-5px) !important;
+    z-index: 3 !important;
+}
+
+.polaroid-photo:nth-child(2) {
+    transform: rotate(4deg) translateY(5px) !important;
+    z-index: 2 !important;
+}
+
+.polaroid-photo:nth-child(3) {
+    transform: rotate(-4deg) translateY(3px) !important;
+    z-index: 2 !important;
+}
+
+/* 悬停效果增强 */
+.polaroid-photo:hover {
+    transform: scale(1.15) rotate(0deg) translateY(-15px) !important;
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.5),
+        0 25px 70px rgba(0, 0, 0, 0.35) !important;
+    filter: sepia(0) contrast(1.05) brightness(1.05) !important;
+}
+
+/* 照片内容区 - 复古色调 */
+.photo-content {
+    background: radial-gradient(ellipse at center, #ede7d9 0%, #e0d5bd 100%) !important;
+    border: 1px solid rgba(139, 90, 43, 0.15);
+}
+
+/* 胶片颗粒和划痕增强 */
+.photo-content::before {
+    background-image:
+        /* 胶片划痕 */
+        linear-gradient(90deg, transparent 70%, rgba(255, 255, 255, 0.3) 70%, rgba(255, 255, 255, 0.3) 70.5%, transparent 70.5%),
+        linear-gradient(45deg, transparent 35%, rgba(0, 0, 0, 0.05) 35%, rgba(0, 0, 0, 0.05) 35.5%, transparent 35.5%),
+        /* 胶片颗粒 */
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.8' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E") !important;
+    opacity: 0.25 !important;
+    mix-blend-mode: multiply;
+}
+
+/* 复古暖色调遮罩 */
+.photo-content::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(ellipse at top left, rgba(255, 245, 220, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at bottom right, rgba(139, 90, 43, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* 确保数字和文字在最上层 */
+.photo-value,
+.photo-label {
+    position: relative;
+    z-index: 2;
+}
+
+/* 照片底部文字样式增强 */
+.photo-caption {
+    font-size: 12px !important;
+    color: #4a3525 !important;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+    z-index: 2;
+}
+
+/* 日期便签优化 - 增加复古纸张质感 */
+.date-box {
+    background: linear-gradient(135deg, #f8f0dc 0%, #f0e5c8 100%) !important;
+    border: 1px solid #c4b49a !important;
+    filter: sepia(0.05);
+}
+
+/* 大数字展示区增强 */
+.days-display {
+    background: linear-gradient(135deg, #faf7f2 0%, #ede5d5 100%) !important;
+    border: 8px solid #252525 !important;
+    box-shadow:
+        0 0 0 4px #8b5a2b,
+        0 10px 30px rgba(0, 0, 0, 0.6),
+        inset 0 0 30px rgba(0, 0, 0, 0.1),
+        inset 0 2px 5px rgba(255, 255, 255, 0.3) !important;
+}

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>我们的100天 💕</title>
+    <link rel="stylesheet" href="vintage-film-enhancement.css">
     <style>
         * {
             margin: 0;
@@ -274,6 +275,7 @@
         .page>*:not(.background-heart) {
             position: relative;
             z-index: 1;
+            overflow-y: auto;
         }
 
         /* ============ 封面页 ============ */
@@ -377,9 +379,12 @@
         }
 
         @keyframes bounce {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateX(-50%) translateY(0);
             }
+
             50% {
                 transform: translateX(-50%) translateY(-10px);
             }
@@ -498,7 +503,7 @@
             font-size: 28px;
             color: white;
             text-shadow: 0 0 30px rgba(255, 105, 180, 0.9),
-                         0 0 60px rgba(255, 105, 180, 0.5);
+                0 0 60px rgba(255, 105, 180, 0.5);
             z-index: 10;
             white-space: nowrap;
         }
@@ -522,6 +527,7 @@
             transform-style: preserve-3d;
             animation: rotate3D 30s infinite linear;
             transform: rotateX(-15deg) rotateY(0deg);
+            will-change: transform;
         }
 
         .carousel-3d.paused {
@@ -538,77 +544,127 @@
             margin-left: -100px;
             margin-top: -140px;
             border-radius: 15px;
+            transition: all 0.5s ease;
+            will-change: transform;
+            transform-style: preserve-3d;
+        }
+
+        /* 正面和背面的公共样式 */
+        .item-front,
+        .item-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
             overflow: hidden;
             box-shadow:
                 0 10px 40px rgba(0, 0, 0, 0.6),
                 0 20px 80px rgba(0, 0, 0, 0.4),
                 inset 0 0 0 2px rgba(255, 255, 255, 0.15);
-            transition: all 0.5s ease;
             border: 4px solid rgba(255, 255, 255, 0.25);
-            backface-visibility: visible;
             background: #1a1a2e;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        /* 正面 */
+        .item-front {
+            transform: rotateY(0deg);
+        }
+
+        /* 背面 - 翻转180度 */
+        .item-back {
+            transform: rotateY(180deg);
         }
 
         /* 增强光影效果 */
-        .carousel-item::before {
+        .item-front::before,
+        .item-back::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(
-                125deg,
-                rgba(255, 255, 255, 0.2) 0%,
-                transparent 40%,
-                transparent 60%,
-                rgba(0, 0, 0, 0.2) 100%
-            );
+            background: linear-gradient(125deg,
+                    rgba(255, 255, 255, 0.2) 0%,
+                    transparent 40%,
+                    transparent 60%,
+                    rgba(0, 0, 0, 0.2) 100%);
             pointer-events: none;
             z-index: 1;
         }
 
         /* 添加立体边框效果 */
-        .carousel-item::after {
+        .item-front::after,
+        .item-back::after {
             content: '';
             position: absolute;
             top: -4px;
             left: -4px;
             right: -4px;
             bottom: -4px;
-            background: linear-gradient(
-                45deg,
-                rgba(255, 105, 180, 0.4) 0%,
-                rgba(147, 51, 234, 0.3) 50%,
-                rgba(59, 130, 246, 0.4) 100%
-            );
+            background: linear-gradient(45deg,
+                    rgba(255, 105, 180, 0.4) 0%,
+                    rgba(147, 51, 234, 0.3) 50%,
+                    rgba(59, 130, 246, 0.4) 100%);
             border-radius: 15px;
             z-index: -1;
             opacity: 0.6;
             filter: blur(8px);
+            will-change: opacity;
         }
 
-        .carousel-item img {
+        .item-front img,
+        .item-back img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             filter: brightness(0.95);
             transition: filter 0.5s ease;
+            /* transform: translateZ(0); */
+            backface-visibility: hidden;
         }
 
-        .carousel-item:hover img {
-            filter: brightness(1.1);
+        @media (hover: hover) {
+            .carousel-item:hover .item-front img,
+            .carousel-item:hover .item-back img {
+                filter: brightness(1.1);
+            }
         }
 
         /* 8张照片围成圆形旋转木马，增大半径到550px以增强立体感 */
-        .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(550px) rotateY(0deg); }
-        .carousel-item:nth-child(2) { transform: rotateY(45deg) translateZ(550px) rotateY(0deg); }
-        .carousel-item:nth-child(3) { transform: rotateY(90deg) translateZ(550px) rotateY(0deg); }
-        .carousel-item:nth-child(4) { transform: rotateY(135deg) translateZ(550px) rotateY(0deg); }
-        .carousel-item:nth-child(5) { transform: rotateY(180deg) translateZ(550px) rotateY(0deg); }
-        .carousel-item:nth-child(6) { transform: rotateY(225deg) translateZ(550px) rotateY(0deg); }
-        .carousel-item:nth-child(7) { transform: rotateY(270deg) translateZ(550px) rotateY(0deg); }
-        .carousel-item:nth-child(8) { transform: rotateY(315deg) translateZ(550px) rotateY(0deg); }
+        .carousel-item:nth-child(1) {
+            transform: rotateY(0deg) translateZ(550px) rotateY(0deg);
+        }
+
+        .carousel-item:nth-child(2) {
+            transform: rotateY(45deg) translateZ(550px) rotateY(0deg);
+        }
+
+        .carousel-item:nth-child(3) {
+            transform: rotateY(90deg) translateZ(550px) rotateY(0deg);
+        }
+
+        .carousel-item:nth-child(4) {
+            transform: rotateY(135deg) translateZ(550px) rotateY(0deg);
+        }
+
+        .carousel-item:nth-child(5) {
+            transform: rotateY(180deg) translateZ(550px) rotateY(0deg);
+        }
+
+        .carousel-item:nth-child(6) {
+            transform: rotateY(225deg) translateZ(550px) rotateY(0deg);
+        }
+
+        .carousel-item:nth-child(7) {
+            transform: rotateY(270deg) translateZ(550px) rotateY(0deg);
+        }
+
+        .carousel-item:nth-child(8) {
+            transform: rotateY(315deg) translateZ(550px) rotateY(0deg);
+        }
 
         /* 地面反射效果 - 增强 */
         .carousel-ground {
@@ -618,20 +674,25 @@
             transform: translateX(-50%) rotateX(90deg);
             width: 1200px;
             height: 1200px;
-            background: radial-gradient(
-                ellipse at center,
-                rgba(255, 105, 180, 0.25) 0%,
-                rgba(255, 105, 180, 0.15) 20%,
-                rgba(147, 51, 234, 0.1) 40%,
-                transparent 70%
-            );
+            background: radial-gradient(ellipse at center,
+                    rgba(255, 105, 180, 0.25) 0%,
+                    rgba(255, 105, 180, 0.15) 20%,
+                    rgba(147, 51, 234, 0.1) 40%,
+                    transparent 70%);
             pointer-events: none;
             animation: groundPulse 4s ease-in-out infinite;
         }
 
         @keyframes groundPulse {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; }
+
+            0%,
+            100% {
+                opacity: 0.8;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
 
         /* 中心装饰光柱 - 增强 */
@@ -642,14 +703,12 @@
             transform: translate(-50%, -50%);
             width: 120px;
             height: 500px;
-            background: linear-gradient(
-                180deg,
-                rgba(255, 105, 180, 0.2) 0%,
-                rgba(255, 105, 180, 0.3) 20%,
-                rgba(147, 51, 234, 0.4) 50%,
-                rgba(255, 105, 180, 0.3) 80%,
-                rgba(255, 105, 180, 0.2) 100%
-            );
+            background: linear-gradient(180deg,
+                    rgba(255, 105, 180, 0.2) 0%,
+                    rgba(255, 105, 180, 0.3) 20%,
+                    rgba(147, 51, 234, 0.4) 50%,
+                    rgba(255, 105, 180, 0.3) 80%,
+                    rgba(255, 105, 180, 0.2) 100%);
             border-radius: 60px;
             pointer-events: none;
             filter: blur(40px);
@@ -657,10 +716,13 @@
         }
 
         @keyframes glowPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 0.6;
                 transform: translate(-50%, -50%) scale(1);
             }
+
             50% {
                 opacity: 1;
                 transform: translate(-50%, -50%) scale(1.1);
@@ -672,6 +734,7 @@
             0% {
                 transform: rotateX(-15deg) rotateY(0deg);
             }
+
             100% {
                 transform: rotateX(-15deg) rotateY(360deg);
             }
@@ -687,11 +750,20 @@
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
         }
 
-        /* 移动端响应式 */
+        /* 移动端响应式 - 性能优化 */
         @media (max-width: 768px) {
             .album-3d-container {
                 perspective: 1200px;
@@ -714,28 +786,75 @@
                 margin-left: -70px;
                 margin-top: -100px;
                 border-radius: 10px;
-                border-width: 3px;
             }
 
+            .item-front,
+            .item-back {
+                border-radius: 10px;
+                border-width: 3px;
+                /* 移动端简化阴影 */
+                box-shadow:
+                    0 8px 25px rgba(0, 0, 0, 0.5),
+                    inset 0 0 0 2px rgba(255, 255, 255, 0.15);
+            }
+
+            /* 移动端移除边框光晕以提升性能 */
+            .item-front::after,
+            .item-back::after {
+                display: none;
+            }
+
+
             /* 移动端旋转半径 - 保持立体感 */
-            .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(350px) rotateY(0deg); }
-            .carousel-item:nth-child(2) { transform: rotateY(45deg) translateZ(350px) rotateY(0deg); }
-            .carousel-item:nth-child(3) { transform: rotateY(90deg) translateZ(350px) rotateY(0deg); }
-            .carousel-item:nth-child(4) { transform: rotateY(135deg) translateZ(350px) rotateY(0deg); }
-            .carousel-item:nth-child(5) { transform: rotateY(180deg) translateZ(350px) rotateY(0deg); }
-            .carousel-item:nth-child(6) { transform: rotateY(225deg) translateZ(350px) rotateY(0deg); }
-            .carousel-item:nth-child(7) { transform: rotateY(270deg) translateZ(350px) rotateY(0deg); }
-            .carousel-item:nth-child(8) { transform: rotateY(315deg) translateZ(350px) rotateY(0deg); }
+            .carousel-item:nth-child(1) {
+                transform: rotateY(0deg) translateZ(350px) rotateY(0deg);
+            }
+
+            .carousel-item:nth-child(2) {
+                transform: rotateY(45deg) translateZ(350px) rotateY(0deg);
+            }
+
+            .carousel-item:nth-child(3) {
+                transform: rotateY(90deg) translateZ(350px) rotateY(0deg);
+            }
+
+            .carousel-item:nth-child(4) {
+                transform: rotateY(135deg) translateZ(350px) rotateY(0deg);
+            }
+
+            .carousel-item:nth-child(5) {
+                transform: rotateY(180deg) translateZ(350px) rotateY(0deg);
+            }
+
+            .carousel-item:nth-child(6) {
+                transform: rotateY(225deg) translateZ(350px) rotateY(0deg);
+            }
+
+            .carousel-item:nth-child(7) {
+                transform: rotateY(270deg) translateZ(350px) rotateY(0deg);
+            }
+
+            .carousel-item:nth-child(8) {
+                transform: rotateY(315deg) translateZ(350px) rotateY(0deg);
+            }
 
             .carousel-ground {
                 bottom: 80px;
                 width: 800px;
                 height: 800px;
+                /* 移动端减少动画 */
+                animation: none;
+                opacity: 0.8;
             }
 
             .carousel-center-glow {
                 width: 80px;
                 height: 350px;
+                /* 移动端减少模糊 */
+                filter: blur(20px);
+                /* 移动端减少动画 */
+                animation: none;
+                opacity: 0.7;
             }
         }
 
@@ -745,7 +864,8 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            display: none; /* 隐藏导航按钮，只保留指示器 */
+            display: none;
+            /* 隐藏导航按钮，只保留指示器 */
             gap: 20px;
             z-index: 100;
         }
@@ -1126,50 +1246,6 @@
             }
         }
 
-        /* ============ 倒计时样式 ============ */
-        .countdown-wrapper {
-            text-align: center;
-        }
-
-        .days-number {
-            font-size: 120px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff, #ffe6f0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 5px 30px rgba(255, 105, 180, 0.5);
-            margin: 30px 0;
-            animation: pulse 2s infinite ease-in-out;
-            filter: drop-shadow(0 0 30px rgba(255, 182, 193, 0.8));
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        .days-label {
-            font-size: 32px;
-            color: rgba(255, 255, 255, 0.95);
-            font-weight: 600;
-            text-shadow: 0 2px 10px rgba(255, 105, 180, 0.5);
-        }
-
-        .countdown-message {
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.9);
-            margin-top: 20px;
-            line-height: 1.8;
-            text-shadow: 0 2px 10px rgba(255, 105, 180, 0.3);
-        }
 
         /* ============ 响应式设计 ============ */
         @media (max-width: 768px) {
@@ -1287,7 +1363,7 @@
                         <span>✨</span>
                         <span>💖</span>
                     </div>
-                    <p class="cover-subtitle">相遇是缘 · 相知是幸</p>
+                    <p class="cover-subtitle">幸好那天</p>
                     <p class="cover-date">
                         一起走过的每一天都值得纪念<br>
                         每一个瞬间都因你而珍贵
@@ -1299,28 +1375,16 @@
                 </div>
             </div>
 
-            <!-- 第2页：倒计时 -->
-            <div class="page">
-                <div class="countdown-wrapper">
-                    <div class="days-number" id="days-counter">100</div>
-                    <div class="days-label">天</div>
-                    <p class="countdown-message">
-                        从相识到现在<br>
-                        每一天都因为你而特别<br>
-                        这是我们的第100天纪念日
-                    </p>
-                </div>
-            </div>
+
 
             <!-- 第3页：初次相遇 -->
             <div class="page content-page">
                 <div class="content-wrapper">
-                    <h2 class="content-title">💫 初次相遇</h2>
-                    <p class="content-date">那天阳光正好</p>
-                    <img src="images/t1.jpg" alt="初次相遇" class="content-photo" loading="lazy">
+                    <h2 class="content-title">💫 第一次一起去陌生城市</h2>
+                    <p class="content-date">那天我们拍了第一次的合照</p>
+                    <img src="images/72.jpg" alt="初次相遇" class="content-photo" loading="lazy">
                     <p class="content-text">
-                        还记得我们第一次见面的场景，你的微笑就像春日的暖阳，让我的心跳加速。
-                        那一刻，我就知道，你是我一直在等待的那个人。
+                        我们在酒店拍了好多的所谓氛围感照片,但是我觉得都很酷,我非常的开心,然后一起在陌生城市吃当地的特色美食,说的最多的话就是避雷这家店hh。
                     </p>
                 </div>
             </div>
@@ -1328,12 +1392,11 @@
             <!-- 第4页：第一次约会 -->
             <div class="page content-page">
                 <div class="content-wrapper">
-                    <h2 class="content-title">🌸 第一次约会</h2>
+                    <h2 class="content-title">🌸 第一次一起看海</h2>
                     <p class="content-date">紧张又期待的一天</p>
-                    <img src="images/t1.jpg" alt="第一次约会" class="content-photo" loading="lazy">
+                    <img src="images/69.jpg" alt="第一次约会" class="content-photo" loading="lazy">
                     <p class="content-text">
-                        第一次约会的紧张，第一次牵手的悸动，第一次一起看电影的温馨...
-                        这些美好的第一次，都成为了我们爱情故事的开始。
+                        紧张是怕给你拍不出好看的照片你会难过,期待的是可以和你一起在海边拍照,在海边我们也拍了很多好看的照片,遗憾的是没赶上日落,不过我觉得日久方长这都不算事.
                     </p>
                 </div>
             </div>
@@ -1343,7 +1406,7 @@
                 <div class="content-wrapper">
                     <h2 class="content-title">🎀 美好时光</h2>
                     <p class="content-date">每一刻都值得珍藏</p>
-                    <img src="images/t1.jpg" alt="美好时光" class="content-photo" loading="lazy">
+                    <img src="images/33.jpg" alt="美好时光" class="content-photo" loading="lazy">
                     <p class="content-text">
                         一起散步、一起吃饭、一起看夕阳，平凡的日子因为有你而变得不平凡。
                         每一个瞬间都是我们爱情的见证。
@@ -1355,11 +1418,10 @@
             <div class="page content-page">
                 <div class="content-wrapper">
                     <h2 class="content-title">💝 难忘回忆</h2>
-                    <p class="content-date">那些让人心动的瞬间</p>
-                    <img src="images/t1.jpg" alt="难忘回忆" class="content-photo" loading="lazy">
+                    <p class="content-date">给我过的第一个生日</p>
+                    <img src="images/76.jpg" alt="难忘回忆" class="content-photo" loading="lazy">
                     <p class="content-text">
-                        每一次的惊喜，每一次的感动，每一次的欢笑...
-                        这些美好的回忆，都深深地刻在了我的心里。
+                        很惊喜,但是某人因为粗心遗漏了礼物,但是我还是很开心,收到宝宝的花和礼物非常的爽和好玩,我爱你宝宝。
                     </p>
                 </div>
             </div>
@@ -1369,9 +1431,9 @@
                 <div class="content-wrapper">
                     <h2 class="content-title">🌟 点点滴滴</h2>
                     <p class="content-date">我们的故事还在继续</p>
-                    <img src="images/t1.jpg" alt="更多回忆" class="content-photo" loading="lazy">
+                    <img src="images/14.jpg" alt="更多回忆" class="content-photo" loading="lazy">
                     <p class="content-text">
-                        生活中的点点滴滴，都因为有你而变得有意义。
+                        一起吃了很多很多很多顿饭,生活中的点点滴滴，都因为有你而变得有意义。
                         未来的每一天，我都想和你一起度过。
                     </p>
                 </div>
@@ -1381,13 +1443,24 @@
             <div class="page content-page">
                 <div class="content-wrapper">
                     <h2 class="content-title">🤝 我们的约定</h2>
-                    <p class="content-date">彼此的承诺</p>
+                    <p class="content-date">彼此</p>
                     <ul class="content-list">
-                        <li>💕 无论发生什么，都要诚实相待</li>
-                        <li>🌈 每天都要说"我爱你"</li>
-                        <li>🎁 记住彼此的重要日子</li>
-                        <li>🤗 难过的时候给对方一个拥抱</li>
-                        <li>✨ 一起努力变成更好的人</li>
+                        <li>💕 一起吃很多很多的饭
+                            <img src="images/14.jpg" alt="更多回忆" class="content-photo" loading="lazy">
+                            <img src="images/15.jpg" alt="更多回忆" class="content-photo" loading="lazy">
+                            <img src="images/24.jpg" alt="更多回忆" class="content-photo" loading="lazy">
+                            <img src="images/25.jpg" alt="更多回忆" class="content-photo" loading="lazy">
+                        </li>
+                        <li>🌈 拍很多很多合照
+                            <img src="images/79.jpg" alt="更多回忆" class="content-photo" loading="lazy">
+                            <img src="images/82.jpg" alt="更多回忆" class="content-photo" loading="lazy">
+                            <img src="images/46.jpg" alt="更多回忆" class="content-photo" loading="lazy">
+                        </li>
+                        <li>🎁 尝试更多新鲜事物
+                            <img src="images/20.jpg" alt="更多回忆" class="content-photo" loading="lazy">
+                            <img src="images/23.jpg" alt="更多回忆" class="content-photo" loading="lazy">
+                            <img src="images/22.jpg" alt="更多回忆" class="content-photo" loading="lazy">
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -1396,12 +1469,13 @@
             <div class="page content-page">
                 <div class="content-wrapper">
                     <h2 class="content-title">📅 特殊的日子</h2>
-                    <p class="content-date">值得纪念的时刻</p>
-                    <img src="images/t1.jpg" alt="特殊日子" class="content-photo" loading="lazy">
+                    <p class="content-date">给李子韩宝宝过的第一个生日</p>
+                    <img src="images/41.jpg" alt="特殊日子" class="content-photo" loading="lazy">
+                    <img src="images/38.jpg" alt="特殊日子" class="content-photo" loading="lazy">
+                    <img src="images/39.jpg" alt="特殊日子" class="content-photo" loading="lazy">
+                    <img src="images/40.jpg" alt="特殊日子" class="content-photo" loading="lazy">
                     <p class="content-text">
-                        第一次见面、第一次牵手、第一次拥抱...
-                        每一个"第一次"都是我们爱情里最珍贵的时刻。
-                        这些日子，我会永远铭记在心。
+                        我们拍完照别人都快下班了hh
                     </p>
                 </div>
             </div>
@@ -1409,13 +1483,13 @@
             <!-- 第10页：第一次说我爱你 -->
             <div class="page content-page">
                 <div class="content-wrapper">
-                    <h2 class="content-title">💌 第一次说我爱你</h2>
-                    <p class="content-date">勇敢表白的那一刻</p>
-                    <img src="images/t1.jpg" alt="第一次说我爱你" class="content-photo" loading="lazy">
+                    <h2 class="content-title">💌 第一次给布置花</h2>
+                    <p class="content-date">紧张</p>
+                    <img src="images/36.jpg" alt="第一次说我爱你" class="content-photo" loading="lazy">
+                    <img src="images/37.jpg" alt="第一次说我爱你" class="content-photo" loading="lazy">
+                    <img src="images/51.jpg" alt="第一次说我爱你" class="content-photo" loading="lazy">
                     <p class="content-text">
-                        还记得第一次对你说"我爱你"时的紧张和激动，
-                        当你笑着回应我的时候，我的世界仿佛都亮了起来。
-                        那一刻，我知道我找到了对的人。
+                        第一次给别人准备这么多花,要是某人不喜欢该咋办啊会不会很尴尬,但是某人看到之后好像是特别喜欢呢。
                     </p>
                 </div>
             </div>
@@ -1423,13 +1497,14 @@
             <!-- 第11页：最难忘的时刻 -->
             <div class="page content-page">
                 <div class="content-wrapper">
-                    <h2 class="content-title">✨ 最难忘的时刻</h2>
-                    <p class="content-date">永远不会忘记</p>
-                    <img src="images/t1.jpg" alt="最难忘的时刻" class="content-photo" loading="lazy">
+                    <h2 class="content-title">✨ 一起散步</h2>
+                    <p class="content-date">路边的花</p>
+                    <img src="images/29.jpg" alt="最难忘的时刻" class="content-photo" loading="lazy">
+                    <img src="images/30.jpg" alt="最难忘的时刻" class="content-photo" loading="lazy">
+                    <img src="images/31.jpg" alt="最难忘的时刻" class="content-photo" loading="lazy">
+                    <img src="images/32.jpg" alt="最难忘的时刻" class="content-photo" loading="lazy">
                     <p class="content-text">
-                        有太多难忘的瞬间：你生病时我陪在你身边，
-                        你为我准备的惊喜，我们一起看过的星空...
-                        每一个瞬间都让我更加确定，你就是我的唯一。
+                        给你摘了几朵花,给你拍了和花的照片。
                     </p>
                 </div>
             </div>
@@ -1437,14 +1512,11 @@
             <!-- 第12页：一起做的傻事 -->
             <div class="page content-page">
                 <div class="content-wrapper">
-                    <h2 class="content-title">😄 一起做的傻事</h2>
-                    <p class="content-date">美好的回忆</p>
-                    <img src="images/t1.jpg" alt="一起做的傻事" class="content-photo" loading="lazy">
+                    <h2 class="content-title">😄 第一次剥柚子</h2>
+                    <p class="content-date">还算不错</p>
+                    <img src="images/52.jpg" alt="一起做的傻事" class="content-photo" loading="lazy">
                     <p class="content-text">
-                        我们一起做过很多"傻事"：
-                        雨中漫步、深夜唱歌、为了看日出早起...
-                        这些"傻事"都是我们独一无二的回忆，
-                        也是我们爱情最美的见证。
+                        你吃的太少了,我不是很满意,对我的手法好像不太认可。
                     </p>
                 </div>
             </div>
@@ -1452,30 +1524,24 @@
             <!-- 第13页：你的优点 -->
             <div class="page content-page">
                 <div class="content-wrapper">
-                    <h2 class="content-title">🌹 我爱你的理由</h2>
-                    <p class="content-date">你的每一面都让我着迷</p>
-                    <ul class="content-list">
-                        <li>💖 你温柔的笑容总能治愈我</li>
-                        <li>🌟 你的善良让世界更美好</li>
-                        <li>💪 你的坚强让我更有勇气</li>
-                        <li>🎨 你的才华让我骄傲</li>
-                        <li>✨ 你的陪伴让我感到幸福</li>
-                    </ul>
+                    <h2 class="content-title">🌹 突发奇想的背景墙</h2>
+                    <p class="content-date">喜欢</p>
+                    <img src="images/16.jpg" alt="一起做的傻事" class="content-photo" loading="lazy">
+                    <p class="content-text">
+                        你真是太聪明了宝宝,一说就知道我想要什么。
+                    </p>
                 </div>
             </div>
 
             <!-- 第14页：感谢有你 -->
             <div class="page content-page">
                 <div class="content-wrapper">
-                    <h2 class="content-title">🙏 感谢有你</h2>
-                    <p class="content-date">因为你，我变得更好</p>
-                    <img src="images/t1.jpg" alt="感谢有你" class="content-photo" loading="lazy">
+                    <h2 class="content-title">🙏 日出</h2>
+                    <p class="content-date">小懒猪还在睡觉</p>
+                    <img src="images/2.jpg" alt="感谢有你" class="content-photo" loading="lazy">
+                    <img src="images/9.jpg" alt="感谢有你" class="content-photo" loading="lazy">
                     <p class="content-text">
-                        感谢你出现在我的生命里，
-                        让我知道什么是真正的爱情。
-                        感谢你的包容、理解和支持，
-                        让我可以勇敢做自己。
-                        有你，真好。
+                        当时要是可以给你打视频看就好了
                     </p>
                 </div>
             </div>
@@ -1483,60 +1549,68 @@
             <!-- 第15页：我的承诺 -->
             <div class="page content-page">
                 <div class="content-wrapper">
-                    <h2 class="content-title">💍 我的承诺</h2>
-                    <p class="content-date">给你的誓言</p>
-                    <ul class="content-list">
-                        <li>💝 我会永远爱你、珍惜你</li>
-                        <li>🛡️ 我会保护你、守护你</li>
-                        <li>☀️ 我会让你每天都开心</li>
-                        <li>🌙 我会陪你度过每一个夜晚</li>
-                        <li>♾️ 我会和你走到永远</li>
-                    </ul>
+                    <h2 class="content-title">💍 不错的合照</h2>
+                    <p class="content-date">在车上一顿拍</p>
+                    <img src="images/43.jpg" alt="感谢有你" class="content-photo" loading="lazy">
+                    <img src="images/44.jpg" alt="感谢有你" class="content-photo" loading="lazy">
+                    <img src="images/45.jpg" alt="感谢有你" class="content-photo" loading="lazy">
+                    <img src="images/48.jpg" alt="感谢有你" class="content-photo" loading="lazy">
+                    <p class="content-text">
+                        看的出来对我的花很满意
+                    </p>
                 </div>
             </div>
 
             <!-- 第16页：3D旋转木马相册 -->
             <div class="page album-3d-page">
-                <h2 class="album-3d-title">💕 我们的相册 💕</h2>
+                <h2 class="album-3d-title">💕 我们的点点滴滴 💕</h2>
                 <div class="album-3d-container">
                     <!-- 中心光柱装饰 -->
                     <div class="carousel-center-glow"></div>
                     <!-- 旋转木马主体 -->
                     <div class="carousel-3d" id="carousel-3d">
-                        <div class="carousel-item"><img src="images/t1.jpg" alt="回忆1"></div>
-                        <div class="carousel-item"><img src="images/t1.jpg" alt="回忆2"></div>
-                        <div class="carousel-item"><img src="images/t1.jpg" alt="回忆3"></div>
-                        <div class="carousel-item"><img src="images/t1.jpg" alt="回忆4"></div>
-                        <div class="carousel-item"><img src="images/t1.jpg" alt="回忆5"></div>
-                        <div class="carousel-item"><img src="images/t1.jpg" alt="回忆6"></div>
-                        <div class="carousel-item"><img src="images/t1.jpg" alt="回忆7"></div>
-                        <div class="carousel-item"><img src="images/t1.jpg" alt="回忆8"></div>
+                        <div class="carousel-item">
+                            <div class="item-front"><img src="images/3.jpg" alt="正面1"></div>
+                            <div class="item-back"><img src="images/5.jpg" alt="背面1"></div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="item-front"><img src="images/17.jpg" alt="正面2"></div>
+                            <div class="item-back"><img src="images/19.jpg" alt="背面2"></div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="item-front"><img src="images/10.jpg" alt="正面3"></div>
+                            <div class="item-back"><img src="images/20.jpg" alt="背面3"></div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="item-front"><img src="images/43.jpg" alt="正面4"></div>
+                            <div class="item-back"><img src="images/44.jpg" alt="背面4"></div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="item-front"><img src="images/49.jpg" alt="正面5"></div>
+                            <div class="item-back"><img src="images/50.jpg" alt="背面5"></div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="item-front"><img src="images/70.jpg" alt="正面6"></div>
+                            <div class="item-back"><img src="images/82.jpg" alt="背面6"></div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="item-front"><img src="images/38.jpg" alt="正面7"></div>
+                            <div class="item-back"><img src="images/39.jpg" alt="背面7"></div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="item-front"><img src="images/41.jpg" alt="正面8"></div>
+                            <div class="item-back"><img src="images/75.jpg" alt="背面8"></div>
+                        </div>
                     </div>
                     <!-- 地面反射效果 -->
                     <div class="carousel-ground"></div>
                 </div>
             </div>
 
-            <!-- 第17页：未来的憧憬 -->
-            <div class="page content-page">
-                <div class="content-wrapper">
-                    <h2 class="content-title">🌈 未来的憧憬</h2>
-                    <p class="content-date">我们的未来</p>
-                    <img src="images/t1.jpg" alt="未来的憧憬" class="content-photo" loading="lazy">
-                    <p class="content-text">
-                        我憧憬着我们的未来：
-                        一起旅行看遍世界的美景，
-                        一起建立温馨的小家，
-                        一起经历人生的每个阶段。
-                        无论未来怎样，只要有你在身边，我就满足了。
-                    </p>
-                </div>
-            </div>
-
             <!-- 第18页：想和你一起做的事 -->
             <div class="page content-page">
                 <div class="content-wrapper">
-                    <h2 class="content-title">📝 想和你一起做的事</h2>
+                    <h2 class="content-title">📝 想和你一起做的事(ps后续可以增加)</h2>
                     <p class="content-date">我们的愿望清单</p>
                     <ul class="content-list">
                         <li>🎡 一起去游乐园坐摩天轮</li>
@@ -1549,27 +1623,13 @@
                 </div>
             </div>
 
-            <!-- 第19页：我们的歌 -->
-            <div class="page content-page">
-                <div class="content-wrapper">
-                    <h2 class="content-title">🎵 我们的歌</h2>
-                    <p class="content-date">属于我们的旋律</p>
-                    <img src="images/t1.jpg" alt="我们的歌" class="content-photo" loading="lazy">
-                    <p class="content-text">
-                        每当听到那首歌，我就会想起你。
-                        那是属于我们的旋律，记录着我们的故事。
-                        希望以后的每一天，都能和你一起听着这首歌，
-                        回忆我们走过的每一步。
-                    </p>
-                </div>
-            </div>
 
             <!-- 第20页：纪念日快乐 -->
             <div class="page content-page">
                 <div class="content-wrapper">
                     <h2 class="content-title">🎉 纪念日快乐</h2>
                     <p class="content-date">100天纪念</p>
-                    <img src="images/t1.jpg" alt="纪念日快乐" class="content-photo" loading="lazy">
+                    <img src="images/35.jpg" alt="纪念日快乐" class="content-photo" loading="lazy">
                     <p class="content-text"
                         style="text-align: center; font-size: 18px; color: #ff69b4; line-height: 2;">
                         今天是我们的100天纪念日<br>
@@ -1585,32 +1645,6 @@
                 </div>
             </div>
 
-            <!-- 第21页：告白 -->
-            <div class="page content-page">
-                <div class="content-wrapper">
-                    <h2 class="content-title">💌 想对你说</h2>
-                    <p class="content-date">写给最爱的你</p>
-                    <p class="content-text"
-                        style="text-align: center; font-size: 18px; color: #ff69b4; line-height: 2;">
-                        亲爱的，<br><br>
-
-                        这100天里，你给了我太多的快乐和感动。<br>
-                        每一天醒来看到你的消息，都是我一天的好心情。<br>
-                        每一次见到你，我的心都会加速跳动。<br><br>
-
-                        谢谢你出现在我的生命里，<br>
-                        谢谢你愿意和我一起走过这100天。<br><br>
-
-                        未来还有更多的100天在等着我们，<br>
-                        我想和你一起经历人生的每一个瞬间。<br><br>
-
-                        <strong style="font-size: 24px;">我爱你 💕</strong><br><br>
-
-                        <span style="font-size: 14px; color: #999;">—— 永远爱你的人</span>
-                    </p>
-                </div>
-            </div>
-
             <!-- 第22页：永远爱你 -->
             <div class="page ending-page">
                 <div class="ending-content">
@@ -1620,11 +1654,11 @@
                         <span>✨</span>
                         <span>💖</span>
                     </div>
-                    <p class="ending-subtitle">我会永远爱你</p>
+                    <p class="ending-subtitle">我爱你宝宝</p>
                     <p class="ending-message">
-                        在无数个日夜里<br>
-                        你是我心中最温柔的光<br>
-                        照亮了我前行的每一步路<br><br>
+                        煽情的话我就不多说了<br>
+                        时间证明吧<br>
+                        成为彼此的依靠<br><br>
 
                         过去的每一天都是珍贵的回忆<br>
                         未来的每一天都值得期待<br>
@@ -1632,7 +1666,7 @@
 
                         <strong style="font-size: 24px; color: #ffb6c1;">❤️ 今天 · 明天 · 每一天 ❤️</strong><br><br>
 
-                        <span style="font-size: 16px; opacity: 0.8;">—— 永远爱你的人</span>
+                        <span style="font-size: 16px; opacity: 0.8;">—— 林</span>
                     </p>
                 </div>
             </div>
@@ -1705,7 +1739,6 @@
             createContinuousLeaves();
             createPageIndicators();
             init3DAlbum();
-            updateDaysCounter();
             updateNavButtons();
             setupEventListeners();
             preloadImages();
@@ -1944,8 +1977,12 @@
             const container = document.getElementById('floating-hearts');
             const heartEmojis = ['💕', '💖', '💗', '💓', '💝', '❤️'];
 
-            // 创建12个爱心
-            for (let i = 0; i < 12; i++) {
+            // 移动端减少数量以优化性能
+            const isMobile = window.innerWidth <= 768;
+            const heartCount = isMobile ? 6 : 12;
+
+            // 创建爱心
+            for (let i = 0; i < heartCount; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('div');
                     heart.className = 'heart';
@@ -1955,7 +1992,10 @@
                     heart.style.animationDuration = (Math.random() * 6 + 12) + 's';
                     heart.style.animationDelay = (Math.random() * 8) + 's';
                     heart.style.fontSize = (Math.random() * 12 + 18) + 'px';
-                    heart.style.filter = `drop-shadow(0 0 8px rgba(255, 105, 180, 0.6))`;
+                    // 移动端移除阴影以提升性能
+                    if (!isMobile) {
+                        heart.style.filter = `drop-shadow(0 0 8px rgba(255, 105, 180, 0.6))`;
+                    }
 
                     container.appendChild(heart);
                 }, i * 200);
@@ -1967,7 +2007,11 @@
             const container = document.getElementById('floating-stars');
             const starEmojis = ['⭐', '✨', '💫', '🌟'];
 
-            for (let i = 0; i < 40; i++) {
+            // 移动端减少数量
+            const isMobile = window.innerWidth <= 768;
+            const starCount = isMobile ? 20 : 40;
+
+            for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.textContent = starEmojis[Math.floor(Math.random() * starEmojis.length)];
@@ -1987,7 +2031,11 @@
             const container = document.getElementById('floating-petals');
             const petalEmojis = ['🌸', '🌺', '🌼', '🌻', '🌷', '🏵️'];
 
-            for (let i = 0; i < 10; i++) {
+            // 移动端减少数量
+            const isMobile = window.innerWidth <= 768;
+            const petalCount = isMobile ? 5 : 10;
+
+            for (let i = 0; i < petalCount; i++) {
                 setTimeout(() => {
                     const petal = document.createElement('div');
                     petal.className = 'petal';
@@ -1997,7 +2045,10 @@
                     petal.style.animationDuration = (Math.random() * 10 + 15) + 's';
                     petal.style.animationDelay = (Math.random() * 8) + 's';
                     petal.style.fontSize = (Math.random() * 10 + 16) + 'px';
-                    petal.style.filter = `drop-shadow(0 0 4px rgba(255, 182, 193, 0.5))`;
+                    // 移动端移除阴影
+                    if (!isMobile) {
+                        petal.style.filter = `drop-shadow(0 0 4px rgba(255, 182, 193, 0.5))`;
+                    }
 
                     container.appendChild(petal);
                 }, i * 400);
@@ -2009,7 +2060,11 @@
             const container = document.getElementById('floating-leaves');
             const leafEmojis = ['🍁', '🍂'];
 
-            for (let i = 0; i < 8; i++) {
+            // 移动端减少数量
+            const isMobile = window.innerWidth <= 768;
+            const leafCount = isMobile ? 4 : 8;
+
+            for (let i = 0; i < leafCount; i++) {
                 setTimeout(() => {
                     const leaf = document.createElement('div');
                     leaf.className = 'leaf';
@@ -2019,7 +2074,10 @@
                     leaf.style.animationDuration = (Math.random() * 8 + 14) + 's';
                     leaf.style.animationDelay = (Math.random() * 6) + 's';
                     leaf.style.fontSize = (Math.random() * 8 + 18) + 'px';
-                    leaf.style.filter = `drop-shadow(0 0 4px rgba(255, 140, 0, 0.4))`;
+                    // 移动端移除阴影
+                    if (!isMobile) {
+                        leaf.style.filter = `drop-shadow(0 0 4px rgba(255, 140, 0, 0.4))`;
+                    }
 
                     container.appendChild(leaf);
                 }, i * 500);
@@ -2056,20 +2114,9 @@
                 this.classList.remove('paused');
             });
         }
-
-        // ============ 倒计时计算 ============
-        function updateDaysCounter() {
-            const startDate = new Date('2024-08-25');
-            const today = new Date();
-            const diffTime = Math.abs(today - startDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            const counter = document.getElementById('days-counter');
-            if (counter) {
-                counter.textContent = diffDays;
-            }
-        }
     </script>
+
+
 </body>
 
 </html>

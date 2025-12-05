@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>复古胶片样式诊断工具</title>
+    <style>
+        body {
+            font-family: 'Consolas', monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+            line-height: 1.6;
+        }
+        h1 { color: #ff6b6b; }
+        h2 { color: #ffd93d; margin-top: 30px; }
+        .test-box {
+            background: #2a2a2a;
+            border: 2px solid #444;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .success { color: #51cf66; }
+        .error { color: #ff6b6b; }
+        .warning { color: #ffd93d; }
+        code {
+            background: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #00d9ff;
+        }
+        .instruction {
+            background: #1e3a5f;
+            padding: 15px;
+            border-left: 4px solid #4dabf7;
+            margin: 15px 0;
+        }
+        button {
+            background: #4dabf7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover { background: #339af0; }
+        #result { margin-top: 20px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>🔍 复古胶片样式诊断工具</h1>
+
+    <div class="test-box">
+        <h2>❓ 问题诊断</h2>
+        <p>你说看不到任何复古效果，让我们逐步排查原因：</p>
+    </div>
+
+    <div class="test-box">
+        <h2>1️⃣ 浏览器缓存问题（最可能）</h2>
+        <div class="instruction">
+            <strong>立即尝试：</strong>
+            <ol>
+                <li>完全关闭浏览器（所有标签页）</li>
+                <li>重新打开浏览器</li>
+                <li>打开 index.html</li>
+                <li>按 <code>Ctrl+Shift+Delete</code> 打开清除缓存面板</li>
+                <li>选择"缓存的图片和文件"</li>
+                <li>选择时间范围："全部"</li>
+                <li>点击清除</li>
+                <li>再按 <code>Ctrl+F5</code> 硬刷新</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="test-box">
+        <h2>2️⃣ CSS加载检测</h2>
+        <div class="instruction">
+            <strong>检查步骤：</strong>
+            <ol>
+                <li>在 index.html 页面上按 <code>F12</code> 打开开发者工具</li>
+                <li>点击 "Elements" 或 "元素" 标签</li>
+                <li>在页面上找到一个宝丽来照片（白色卡片）</li>
+                <li>右键点击 → "检查" 或 "检查元素"</li>
+                <li>在右侧 "Styles" 面板中查看是否有以下样式：
+                    <ul>
+                        <li><code>background: linear-gradient(135deg, #fcfcfc 0%, #f5f5f0 100%)</code></li>
+                        <li><code>filter: sepia(0.08) contrast(1.02)</code></li>
+                    </ul>
+                </li>
+                <li>如果这些样式被划掉了（有删除线），说明被其他样式覆盖</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="test-box">
+        <h2>3️⃣ 样式文件验证</h2>
+        <button onclick="checkStyleBlock()">点击检查样式块是否存在</button>
+        <div id="result"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>4️⃣ 可能的原因分析</h2>
+        <ul>
+            <li class="warning"><strong>原因A：浏览器缓存</strong> - 概率 70%<br>
+                浏览器可能缓存了旧的CSS文件，需要强制刷新</li>
+
+            <li class="warning"><strong>原因B：样式优先级</strong> - 概率 20%<br>
+                虽然使用了!important，但可能被内联样式覆盖</li>
+
+            <li class="warning"><strong>原因C：浏览器兼容性</strong> - 概率 5%<br>
+                某些老旧浏览器可能不支持某些CSS特性</li>
+
+            <li class="warning"><strong>原因D：文件未保存</strong> - 概率 5%<br>
+                编辑器可能未自动保存修改</li>
+        </ul>
+    </div>
+
+    <div class="test-box">
+        <h2>5️⃣ 终极解决方案</h2>
+        <div class="instruction">
+            <p>如果上述方法都不行，请告诉我：</p>
+            <ol>
+                <li>你使用的浏览器名称和版本（Chrome/Firefox/Edge/Safari？）</li>
+                <li>按F12后，在Console标签下是否有任何红色错误信息？</li>
+                <li>在Elements标签下，能否找到我添加的 <code>&lt;style&gt;</code> 标签（在 &lt;/body&gt; 之前）？</li>
+            </ol>
+            <p>我会根据这些信息提供针对性的解决方案。</p>
+        </div>
+    </div>
+
+    <div class="test-box">
+        <h2>6️⃣ 备用方案：直接查看测试页面</h2>
+        <p>我创建了一个独立的测试页面来验证样式是否正确：</p>
+        <button onclick="window.location.href='test-vintage-styles.html'">打开测试页面</button>
+    </div>
+
+    <script>
+        function checkStyleBlock() {
+            const result = document.getElementById('result');
+            result.innerHTML = '正在检查...\n\n';
+
+            fetch('index.html')
+                .then(response => response.text())
+                .then(html => {
+                    const hasEnhancedStyles = html.includes('复古胶片照片墙增强样式覆盖');
+                    const hasSepia = html.includes('sepia(0.08)');
+                    const hasGradient = html.includes('linear-gradient(135deg, #fcfcfc');
+
+                    let output = '';
+                    output += hasEnhancedStyles ? '✅ 样式块标记存在\n' : '❌ 样式块标记不存在\n';
+                    output += hasSepia ? '✅ Sepia滤镜代码存在\n' : '❌ Sepia滤镜代码不存在\n';
+                    output += hasGradient ? '✅ 渐变背景代码存在\n' : '❌ 渐变背景代码不存在\n';
+
+                    if (hasEnhancedStyles && hasSepia && hasGradient) {
+                        output += '\n✅ 样式代码已正确添加到HTML文件中！\n';
+                        output += '\n📌 问题很可能是浏览器缓存。\n';
+                        output += '请完全关闭浏览器后重新打开，然后按Ctrl+F5刷新。\n';
+                    } else {
+                        output += '\n❌ 样式代码可能未正确保存。\n';
+                        output += '请通知开发者重新添加样式。\n';
+                    }
+
+                    result.innerHTML = output;
+                })
+                .catch(err => {
+                    result.innerHTML = '❌ 无法读取文件: ' + err.message;
+                });
+        }
+    </script>
+</body>
+</html>

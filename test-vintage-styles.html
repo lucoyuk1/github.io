@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>复古胶片样式测试页面</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: radial-gradient(ellipse at top left, rgba(139, 90, 43, 0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at bottom right, rgba(93, 58, 26, 0.12) 0%, transparent 50%),
+                        #0f0e0d;
+            min-height: 100vh;
+            padding: 40px 20px;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            color: #f4e4c1;
+            margin-bottom: 20px;
+            font-style: italic;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(244, 228, 193, 0.4), 0 3px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .instruction {
+            background: rgba(244, 228, 193, 0.1);
+            border: 1px solid rgba(244, 228, 193, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            color: #f4e4c1;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .photo-wall {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            perspective: 1200px;
+        }
+
+        .polaroid-photo {
+            background: linear-gradient(135deg, #fcfcfc 0%, #f5f5f0 100%);
+            padding: 14px 14px 48px 14px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.3),
+                        inset 0 0 0 1px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: sepia(0.08) contrast(1.02);
+        }
+
+        .polaroid-photo::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(139, 90, 43, 0.03) 0%, transparent 40%);
+            pointer-events: none;
+            border-radius: 2px;
+            z-index: 0;
+        }
+
+        .polaroid-photo:nth-child(1) {
+            transform: rotate(-6deg) translateY(-5px);
+            z-index: 3;
+        }
+
+        .polaroid-photo:nth-child(2) {
+            transform: rotate(4deg) translateY(5px);
+            z-index: 2;
+        }
+
+        .polaroid-photo:nth-child(3) {
+            transform: rotate(-4deg) translateY(3px);
+            z-index: 2;
+        }
+
+        .polaroid-photo:hover {
+            transform: scale(1.15) rotate(0deg) translateY(-15px);
+            z-index: 10;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 25px 70px rgba(0, 0, 0, 0.35);
+            filter: sepia(0) contrast(1.05) brightness(1.05);
+        }
+
+        .photo-content {
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(ellipse at center, #ede7d9 0%, #e0d5bd 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(139, 90, 43, 0.15);
+        }
+
+        .photo-content::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(90deg, transparent 70%, rgba(255, 255, 255, 0.3) 70%, rgba(255, 255, 255, 0.3) 70.5%, transparent 70.5%),
+                            linear-gradient(45deg, transparent 35%, rgba(0, 0, 0, 0.05) 35%, rgba(0, 0, 0, 0.05) 35.5%, transparent 35.5%),
+                            url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.8' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.25;
+            pointer-events: none;
+            mix-blend-mode: multiply;
+            z-index: 1;
+        }
+
+        .photo-content::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at top left, rgba(255, 245, 220, 0.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at bottom right, rgba(139, 90, 43, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .photo-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #5d4037;
+            font-family: 'Georgia', serif;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            line-height: 1;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .photo-label {
+            font-size: 16px;
+            color: #8b5a2b;
+            font-family: 'Georgia', serif;
+            position: relative;
+            z-index: 2;
+        }
+
+        .photo-caption {
+            position: absolute;
+            bottom: 8px;
+            left: 0; right: 0;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #4a3525;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+            z-index: 2;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .comparison-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid rgba(244, 228, 193, 0.2);
+        }
+
+        .comparison-box h3 {
+            color: #ff6b6b;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .comparison-box.correct h3 {
+            color: #51cf66;
+        }
+
+        .checklist {
+            color: #f4e4c1;
+            line-height: 2;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .checklist li {
+            margin: 10px 0;
+        }
+
+        .check-mark { color: #51cf66; }
+        .x-mark { color: #ff6b6b; }
+
+        @media (max-width: 768px) {
+            .comparison { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎬 复古胶片样式效果测试</h1>
+
+        <div class="instruction">
+            <p><strong>这个页面展示了复古胶片效果应该是什么样子</strong></p>
+            <p>如果你的倒计时页面（第2页）看起来和这里一样，说明样式已经生效 ✅</p>
+            <p>如果不一样，请对比差异并按下面的检查清单操作 ⬇️</p>
+        </div>
+
+        <h2 style="color: #f4e4c1; text-align: center; margin: 30px 0;">复古宝丽来照片效果示例</h2>
+
+        <div class="photo-wall">
+            <div class="polaroid-photo">
+                <div class="photo-content">
+                    <div class="photo-value">3</div>
+                    <div class="photo-label">个月</div>
+                </div>
+                <div class="photo-caption">Months Together</div>
+            </div>
+
+            <div class="polaroid-photo">
+                <div class="photo-content">
+                    <div class="photo-value">15</div>
+                    <div class="photo-label">周</div>
+                </div>
+                <div class="photo-caption">Weeks of Love</div>
+            </div>
+
+            <div class="polaroid-photo">
+                <div class="photo-content">
+                    <div class="photo-value">2400</div>
+                    <div class="photo-label">小时</div>
+                </div>
+                <div class="photo-caption">Hours & Counting</div>
+            </div>
+        </div>
+
+        <div class="comparison">
+            <div class="comparison-box correct">
+                <h3>✅ 正确效果（应该看到）</h3>
+                <ul style="color: #f4e4c1; line-height: 2;">
+                    <li><span class="check-mark">✓</span> 照片有泛黄的米色背景</li>
+                    <li><span class="check-mark">✓</span> 照片有轻微倾斜角度</li>
+                    <li><span class="check-mark">✓</span> 照片表面有颗粒质感</li>
+                    <li><span class="check-mark">✓</span> 整体有复古暖色调</li>
+                    <li><span class="check-mark">✓</span> 悬停时照片会放大变亮</li>
+                    <li><span class="check-mark">✓</span> 白色相框有渐变效果</li>
+                    <li><span class="check-mark">✓</span> 底部有手写风格文字</li>
+                </ul>
+            </div>
+
+            <div class="comparison-box">
+                <h3>❌ 错误效果（如果看到这些）</h3>
+                <ul style="color: #f4e4c1; line-height: 2;">
+                    <li><span class="x-mark">✗</span> 照片是纯白色背景</li>
+                    <li><span class="x-mark">✗</span> 照片完全水平放置</li>
+                    <li><span class="x-mark">✗</span> 照片表面光滑无质感</li>
+                    <li><span class="x-mark">✗</span> 颜色过于鲜艳现代</li>
+                    <li><span class="x-mark">✗</span> 悬停没有反应</li>
+                    <li><span class="x-mark">✗</span> 相框是纯白色</li>
+                    <li><span class="x-mark">✗</span> 没有底部文字装饰</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="checklist">
+            <h2 style="color: #ffd93d; margin-bottom: 20px;">🔧 如果你的页面效果不对，请按以下步骤检查：</h2>
+            <ol>
+                <li><strong>步骤1：</strong> 完全关闭浏览器（关闭所有标签页）</li>
+                <li><strong>步骤2：</strong> 重新打开浏览器</li>
+                <li><strong>步骤3：</strong> 打开 index.html</li>
+                <li><strong>步骤4：</strong> 按 <code style="background: #000; padding: 2px 8px;">Ctrl + Shift + Delete</code> 打开清除数据</li>
+                <li><strong>步骤5：</strong> 勾选"缓存的图片和文件"，时间选"全部"</li>
+                <li><strong>步骤6：</strong> 点击"清除数据"</li>
+                <li><strong>步骤7：</strong> 按 <code style="background: #000; padding: 2px 8px;">Ctrl + F5</code> 硬刷新页面</li>
+                <li><strong>步骤8：</strong> 滑动到第2页查看效果</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin: 40px 0; color: #f4e4c1;">
+            <p>如果按照上述步骤操作后还是看不到效果，</p>
+            <p>请告诉我你使用的浏览器和版本，我会提供进一步的解决方案。</p>
+        </div>
+    </div>
+</body>
+</html>
