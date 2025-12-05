@@ -468,11 +468,10 @@
             line-height: 1.6;
         }
 
-        /* ============ 3D相册页 ============ */
+        /* ============ 3D旋转木马相册页 ============ */
         .album-3d-page {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            background: linear-gradient(180deg, #0a0a1a 0%, #1a1a3e 40%, #2a1a4e 100%);
+            overflow: hidden;
         }
 
         /* 3D相册页面不显示背景爱心 */
@@ -487,119 +486,256 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            perspective: 1200px; /* 3D透视关键 */
+            perspective: 2000px;
+            perspective-origin: 50% 45%;
         }
 
         .album-3d-title {
             position: absolute;
-            top: 80px;
+            top: 40px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 32px;
+            font-size: 28px;
             color: white;
-            text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+            text-shadow: 0 0 30px rgba(255, 105, 180, 0.9),
+                         0 0 60px rgba(255, 105, 180, 0.5);
             z-index: 10;
+            white-space: nowrap;
         }
 
+        /* 旋转木马场景容器 */
+        .carousel-scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+
+        /* 旋转木马主体 - 增强立体倾斜角度 */
         .carousel-3d {
-            width: 250px;
-            height: 350px;
+            width: 200px;
+            height: 280px;
             position: relative;
             transform-style: preserve-3d;
-            animation: rotate3D 20s infinite linear;
+            animation: rotate3D 30s infinite linear;
+            transform: rotateX(-15deg) rotateY(0deg);
         }
 
         .carousel-3d.paused {
             animation-play-state: paused;
         }
 
+        /* 照片卡片样式 - 增强立体效果 */
         .carousel-item {
             position: absolute;
-            width: 220px;
-            height: 300px;
-            left: 15px;
-            top: 25px;
+            width: 200px;
+            height: 280px;
+            left: 50%;
+            top: 50%;
+            margin-left: -100px;
+            margin-top: -140px;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.6),
+                0 20px 80px rgba(0, 0, 0, 0.4),
+                inset 0 0 0 2px rgba(255, 255, 255, 0.15);
+            transition: all 0.5s ease;
+            border: 4px solid rgba(255, 255, 255, 0.25);
+            backface-visibility: visible;
+            background: #1a1a2e;
+        }
+
+        /* 增强光影效果 */
+        .carousel-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                125deg,
+                rgba(255, 255, 255, 0.2) 0%,
+                transparent 40%,
+                transparent 60%,
+                rgba(0, 0, 0, 0.2) 100%
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 添加立体边框效果 */
+        .carousel-item::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(
+                45deg,
+                rgba(255, 105, 180, 0.4) 0%,
+                rgba(147, 51, 234, 0.3) 50%,
+                rgba(59, 130, 246, 0.4) 100%
+            );
+            border-radius: 15px;
+            z-index: -1;
+            opacity: 0.6;
+            filter: blur(8px);
         }
 
         .carousel-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            filter: brightness(0.95);
+            transition: filter 0.5s ease;
         }
 
-        /* 8张照片围成圆形，每张相隔45度 */
-        .carousel-item:nth-child(1) {
-            transform: rotateY(0deg) translateZ(380px);
+        .carousel-item:hover img {
+            filter: brightness(1.1);
         }
 
-        .carousel-item:nth-child(2) {
-            transform: rotateY(45deg) translateZ(380px);
+        /* 8张照片围成圆形旋转木马，增大半径到550px以增强立体感 */
+        .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(550px) rotateY(0deg); }
+        .carousel-item:nth-child(2) { transform: rotateY(45deg) translateZ(550px) rotateY(0deg); }
+        .carousel-item:nth-child(3) { transform: rotateY(90deg) translateZ(550px) rotateY(0deg); }
+        .carousel-item:nth-child(4) { transform: rotateY(135deg) translateZ(550px) rotateY(0deg); }
+        .carousel-item:nth-child(5) { transform: rotateY(180deg) translateZ(550px) rotateY(0deg); }
+        .carousel-item:nth-child(6) { transform: rotateY(225deg) translateZ(550px) rotateY(0deg); }
+        .carousel-item:nth-child(7) { transform: rotateY(270deg) translateZ(550px) rotateY(0deg); }
+        .carousel-item:nth-child(8) { transform: rotateY(315deg) translateZ(550px) rotateY(0deg); }
+
+        /* 地面反射效果 - 增强 */
+        .carousel-ground {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%) rotateX(90deg);
+            width: 1200px;
+            height: 1200px;
+            background: radial-gradient(
+                ellipse at center,
+                rgba(255, 105, 180, 0.25) 0%,
+                rgba(255, 105, 180, 0.15) 20%,
+                rgba(147, 51, 234, 0.1) 40%,
+                transparent 70%
+            );
+            pointer-events: none;
+            animation: groundPulse 4s ease-in-out infinite;
         }
 
-        .carousel-item:nth-child(3) {
-            transform: rotateY(90deg) translateZ(380px);
+        @keyframes groundPulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
         }
 
-        .carousel-item:nth-child(4) {
-            transform: rotateY(135deg) translateZ(380px);
+        /* 中心装饰光柱 - 增强 */
+        .carousel-center-glow {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 500px;
+            background: linear-gradient(
+                180deg,
+                rgba(255, 105, 180, 0.2) 0%,
+                rgba(255, 105, 180, 0.3) 20%,
+                rgba(147, 51, 234, 0.4) 50%,
+                rgba(255, 105, 180, 0.3) 80%,
+                rgba(255, 105, 180, 0.2) 100%
+            );
+            border-radius: 60px;
+            pointer-events: none;
+            filter: blur(40px);
+            animation: glowPulse 3s ease-in-out infinite;
         }
 
-        .carousel-item:nth-child(5) {
-            transform: rotateY(180deg) translateZ(380px);
+        @keyframes glowPulse {
+            0%, 100% {
+                opacity: 0.6;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
         }
 
-        .carousel-item:nth-child(6) {
-            transform: rotateY(225deg) translateZ(380px);
-        }
-
-        .carousel-item:nth-child(7) {
-            transform: rotateY(270deg) translateZ(380px);
-        }
-
-        .carousel-item:nth-child(8) {
-            transform: rotateY(315deg) translateZ(380px);
-        }
-
+        /* 旋转动画 - 增强立体倾斜角度 */
         @keyframes rotate3D {
             0% {
-                transform: rotateY(0deg);
+                transform: rotateX(-15deg) rotateY(0deg);
             }
             100% {
-                transform: rotateY(360deg);
+                transform: rotateX(-15deg) rotateY(360deg);
             }
         }
 
+        /* 星星装饰 */
+        .album-3d-page .star-decoration {
+            position: absolute;
+            color: white;
+            font-size: 8px;
+            opacity: 0.6;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* 移动端响应式 */
         @media (max-width: 768px) {
             .album-3d-container {
-                perspective: 800px;
+                perspective: 1200px;
+                perspective-origin: 50% 45%;
+            }
+
+            .album-3d-title {
+                font-size: 22px;
+                top: 30px;
             }
 
             .carousel-3d {
-                width: 180px;
-                height: 250px;
+                width: 160px;
+                height: 220px;
             }
 
             .carousel-item {
-                width: 160px;
-                height: 220px;
-                left: 10px;
-                top: 15px;
+                width: 140px;
+                height: 200px;
+                margin-left: -70px;
+                margin-top: -100px;
+                border-radius: 10px;
+                border-width: 3px;
             }
 
-            .carousel-item:nth-child(1),
-            .carousel-item:nth-child(2),
-            .carousel-item:nth-child(3),
-            .carousel-item:nth-child(4),
-            .carousel-item:nth-child(5),
-            .carousel-item:nth-child(6),
-            .carousel-item:nth-child(7),
-            .carousel-item:nth-child(8) {
-                transform: rotateY(calc(var(--index) * 45deg)) translateZ(280px);
+            /* 移动端旋转半径 - 保持立体感 */
+            .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(350px) rotateY(0deg); }
+            .carousel-item:nth-child(2) { transform: rotateY(45deg) translateZ(350px) rotateY(0deg); }
+            .carousel-item:nth-child(3) { transform: rotateY(90deg) translateZ(350px) rotateY(0deg); }
+            .carousel-item:nth-child(4) { transform: rotateY(135deg) translateZ(350px) rotateY(0deg); }
+            .carousel-item:nth-child(5) { transform: rotateY(180deg) translateZ(350px) rotateY(0deg); }
+            .carousel-item:nth-child(6) { transform: rotateY(225deg) translateZ(350px) rotateY(0deg); }
+            .carousel-item:nth-child(7) { transform: rotateY(270deg) translateZ(350px) rotateY(0deg); }
+            .carousel-item:nth-child(8) { transform: rotateY(315deg) translateZ(350px) rotateY(0deg); }
+
+            .carousel-ground {
+                bottom: 80px;
+                width: 800px;
+                height: 800px;
+            }
+
+            .carousel-center-glow {
+                width: 80px;
+                height: 350px;
             }
         }
 
@@ -1359,10 +1495,13 @@
                 </div>
             </div>
 
-            <!-- 第16页：3D相册 -->
+            <!-- 第16页：3D旋转木马相册 -->
             <div class="page album-3d-page">
                 <h2 class="album-3d-title">💕 我们的相册 💕</h2>
                 <div class="album-3d-container">
+                    <!-- 中心光柱装饰 -->
+                    <div class="carousel-center-glow"></div>
+                    <!-- 旋转木马主体 -->
                     <div class="carousel-3d" id="carousel-3d">
                         <div class="carousel-item"><img src="images/t1.jpg" alt="回忆1"></div>
                         <div class="carousel-item"><img src="images/t1.jpg" alt="回忆2"></div>
@@ -1373,6 +1512,8 @@
                         <div class="carousel-item"><img src="images/t1.jpg" alt="回忆7"></div>
                         <div class="carousel-item"><img src="images/t1.jpg" alt="回忆8"></div>
                     </div>
+                    <!-- 地面反射效果 -->
+                    <div class="carousel-ground"></div>
                 </div>
             </div>
 
